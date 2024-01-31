@@ -4,6 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
+        <!-- Icone do site -->
+        <link rel="shortcut icon" href="resources/img/OMNE_LOGO.svg" type="image/x-icon">
+
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> -->
@@ -14,13 +17,13 @@
 
         <title>Omne Criações</title>
     </head>
-    <body>
-        <header>
-            <nav class="navbar navbar-expand-sm">
+    <body class="container-xxxl">
+        <div id="zoom-container" class="hidden"></div>
+        <header id="main-page">
+            <nav class="navbar navbar-expand-sm" style="left: 0;">
                 <div class="container">
-
-                    <a class="navbar-brand" href="#" style="cursor: pointer; color: white; width: 60px; height: 60px;"><!-- Omne Criações -->
-                        <img src="resources/img/OMNE_LOGO.svg" alt="Omne_Logo.png">
+                    <a class="navbar-brand omne-logo" href="#main-page"><!-- Omne Criações -->
+                        <img src="resources/img/OMNE_LOGO_SOFT.svg" alt="Omne_Logo.png" style="height: 60px;">
                     </a>
 
                     <!-- Tenho q corrigir essa porra de svg q n funfa -->
@@ -30,16 +33,16 @@
                     <div class="collapse navbar-collapse" id="nav-principal">
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a href="" class="nav-link btn btn-dark m-2">Home</a>
+                                <a href="#main-page" class="nav-link btn btn-dark m-2">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a href="" class="nav-link btn btn-dark m-2">Recursos</a>
+                                <a href="#cenografia" class="nav-link btn btn-dark m-2">Recursos</a>
                             </li>
                             <li class="nav-item">
-                                <a href="" class="nav-link btn btn-dark m-2">Benefícios</a>
+                                <a href="#esculturas" class="nav-link btn btn-dark m-2">Benefícios</a>
                             </li>
                             <li class="nav-item">
-                                <a href="" class="nav-link btn btn-dark m-2">Preços</a>
+                                <a href="#contato" class="nav-link btn btn-dark m-2">Preços</a>
                             </li>
                         </ul>
                     </div>
@@ -48,10 +51,10 @@
             </nav>
             <div class="swiper" id="swiper-header">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img class="header-swiper-img" src="resources/img/1-imagem-2.jpg"></div>
-                    <div class="swiper-slide"><img class="header-swiper-img" src="resources/img/lounge-havaianas2.jpg"></div>
-                    <div class="swiper-slide"><img class="header-swiper-img" src="resources/img/mini_truck_coca-cola.jpg"></div>
-                    <div class="swiper-slide"><img class="header-swiper-img" src="resources/img/submarino4.jpg"></div>
+                    <div class="swiper-slide"><img src="resources/img/1-imagem-2.jpg"></div>
+                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                    <div class="swiper-slide"><img src="resources/img/mini_truck_coca-cola.jpg"></div>
+                    <div class="swiper-slide"><img src="resources/img/submarino4.jpg"></div>
                 </div>
                 <div class="swiper-pagination"></div>
                 <div class="swiper-button-prev"></div>
@@ -59,76 +62,70 @@
             </div>
         </header>
 
-        <div class="portfolio-container">
-            <h2>Cenografia</h2>
-            <p>
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
-            </p>
-            <div class="swiper" id="swiper-scenography">
-                <div class="swiper-wrapper portfolio-swiper-wrapper">
-                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
-                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
-                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
-                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+        <section id="cenografia" class="container">
+            <div class="md-col-4 portfolio-container ml-auto">
+                <h2>Cenografia</h2>
+                <p>
+                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
+                </p>
+                <div class="swiper portfolio-swiper" id="swiper-scenography">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                        <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                        <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                        <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
                 </div>
-                <div class="swiper-pagination"></div>
             </div>
-        </div>
-        <div class="portfolio-container">
-            <h2>Esculturas</h2>
-            <p>
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
-            </p>
-            <div class="swiper" id="swiper-sculptures">
-                <div class="swiper-wrapper portfolio-swiper-wrapper">
-                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
-                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
-                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
-                    <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+            <div id="esculturas" class="md-col-4 portfolio-container mr-auto">
+                <h2>Esculturas</h2>
+                <p>
+                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
+                </p>
+                <div class="swiper portfolio-swiper" id="swiper-sculptures">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                        <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                        <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                        <div class="swiper-slide"><img src="resources/img/lounge-havaianas2.jpg"></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
                 </div>
-                <div class="swiper-pagination"></div>
             </div>
-        </div>
+            <div id="contato" class="portfolio-container mr-auto ml-auto">
+                <h2>Mande-nos um e-mail!</h2>
+                <form name="formulario" action="http://formsubmit.co/ce2510b1facdb30beb47c13de5536e64" method="post">
+                    <p><b>Nome:</b><br>
+                    <input class="form-control" placeholder="Seu nome aqui..." type=text name="name"></p><br>
+                    <p><b>Telefone:</b><br>
+                    <input class="form-control"  placeholder="+55(XX)9XXXX-XXXX" type=tel name="phone" pattern="+[0-9]{2}([0-9]{2})[0-9]{5}-[0-9]{4}"></p><br>
+                    <p><b>Email:</b><br>
+                    <input class="form-control" placeholder="email@email.com" type=text name="email"></p><br>
+                    <p><b>Assunto:</b><br>
+                    <input class="form-control" placeholder="Gostaria de fazer um projeto..." type=text name="subject"></p><br>
+                    <p><b>Mensagem:</b><br>
+                    <textarea class="form-control" placeholder="Detalhes do projeto aqui..." name="Mensagem" rows="10" cols="60" wrap="virtual"></textarea></p><br>
+                    <input class="btn btn-outline-dark" type="submit" value="Enviar Email">
+                </form>
+            </div>
+        </section>
 
         <div class="hidden" id="whatsapp">
             <a href="https://wa.me//5514991847209?text=Tenho%20interesse%20em%20fazer%20um%20orçamento%20de%20um%20projeto"><i class="fa-brands fa-whatsapp fa-xl"></i></a>
         </div>
 
-        <footer style="text-align: center;">
+        <footer>
             <span>Contato: omnecrioacoes@omnecrioacoes.com</span>
         </footer>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> -->
         <script src="https://kit.fontawesome.com/f1f8ef7a6d.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-        <script src="resources/js/sticky-nav.js"></script>
         <script src="resources/js/scrollPopUp.js"></script>
-        <script>
-            const swiperHeader = new Swiper('#swiper-header', {
-                loop: true,
-
-                pagination: { el: '.swiper-pagination', },
-
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-            });
-
-            const swiperScn = new Swiper('#swiper-scenography', {
-                loop: false,
-                pagination: { el: '.swiper-pagination', },
-            });
-
-            const swiperScu = new Swiper('#swiper-sculptures', {
-                loop: false,
-
-                pagination: { el: '.swiper-pagination', },
-            });
-        </script>
+        <script src="resources/js/swipe.js"></script>
+        <script src="resources/js/centerImg.js"></script>
     </body>
 </html>
