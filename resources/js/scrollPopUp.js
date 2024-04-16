@@ -1,6 +1,4 @@
-const nav = document.querySelector('nav');
 const wpp = document.querySelector('#whatsapp');
-let navTimeout, lastScrollY = window.scrollY;
 let wppTimeout, wppHovered = false, wppFocused = false;
 
 function hideObject(_object)
@@ -25,19 +23,6 @@ window.addEventListener('scroll', () => {
 
     if(!wppHovered && !wppFocused) { wppTimeout = setTimeout(() => { hideObject(wpp); }, 3000); } /* Preciso checar o porque disso estar funcionando */
 
-
-    if(document.documentElement.scrollTop > 100)
-    {
-        if(lastScrollY < window.scrollY) { nav.classList.add("nav-hidden"); }
-        else { nav.classList.remove("nav-hidden"); };
-        lastScrollY = window.scrollY;
-
-        nav.classList.add("sticky");
-    }
-    else
-    {
-        nav.classList.remove("sticky");
-    }
 });
 
 wpp.addEventListener('mouseover', () => {

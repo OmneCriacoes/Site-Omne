@@ -8,7 +8,7 @@ window.addEventListener('scroll', () => {
 
     showObject(wpp);
 
-    if(timeout && !hovered && !focused) { timeout = setTimeout(() => { hideObject(wpp); }, 3000); } /* Preciso checar o porque disso estar funcionando */
+    if(timeout && !hovered && !focused) { timeout = setTimeout(() => { hideObject(wpp); }, 3000); }
 });
 
 wpp.addEventListener('mouseover', () => {
