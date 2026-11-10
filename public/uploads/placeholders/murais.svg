@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#20363a"/><stop offset="1" stop-color="#4f8a86"/></linearGradient>
+<radialGradient id="l" cx="0.75" cy="0.25" r="0.6"><stop offset="0" stop-color="#e7c98f" stop-opacity="0.55"/><stop offset="1" stop-color="#e7c98f" stop-opacity="0"/></radialGradient></defs>
+<rect width="1600" height="1200" fill="url(#g)"/><rect width="1600" height="1200" fill="url(#l)"/>
+<path d="M1167 1200 V1142 a277 277 0 0 1 554 0 V1200Z" fill="#e7c98f" opacity="0.39"/>
+<path d="M897 1200 V853.5 a206.5 206.5 0 0 1 413 0 V1200Z" fill="#4f8a86" opacity="0.35"/>
+<path d="M1454 1200 V801.5 a120.5 120.5 0 0 1 241 0 V1200Z" fill="#e7c98f" opacity="0.42"/>
+<path d="M1063 1200 V876.5 a285.5 285.5 0 0 1 571 0 V1200Z" fill="#4f8a86" opacity="0.33"/>
+<path d="M649 1200 V845 a164 164 0 0 1 328 0 V1200Z" fill="#e7c98f" opacity="0.46"/>
+<text x="60" y="1140" font-family="sans-serif" font-size="34" fill="#e7c98f" opacity="0.8" letter-spacing="4">IMAGEM PROVISÓRIA</text>
+</svg>

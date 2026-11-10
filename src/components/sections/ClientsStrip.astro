@@ -1,0 +1,77 @@
+---
+import { SEGMENT_LABELS, type Client } from '@domain/entities';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+
+interface Props {
+  clients: readonly Client[];
+}
+
+const { clients } = Astro.props;
+---
+
+{
+  clients.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <SectionHeading eyebrow="Quem confia" title="Clientes atendidos" align="center" />
+        <ul class="list">
+          {clients.map((client) => (
+            <li>
+              {client.logo ? (
+                <img src={client.logo.src} alt={client.logo.alt} loading="lazy" />
+              ) : (
+                <span class="name" data-sk="text">
+                  {client.name}
+                </span>
+              )}
+              <span class="segment" data-sk="text">
+                {SEGMENT_LABELS[client.segment]}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .section {
+    padding-block: var(--space-8);
+    border-block: 1px solid var(--color-line);
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+    padding: var(--space-5);
+    text-align: center;
+  }
+
+  .name {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+  }
+
+  .segment {
+    color: var(--color-ink-soft);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  img {
+    max-height: 3rem;
+    width: auto;
+  }
+</style>

@@ -1,0 +1,142 @@
+---
+import { container } from '@core/container';
+import { SEGMENT_LABELS } from '@domain/entities';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CtaBand from '@components/sections/CtaBand.astro';
+import ProjectGrid from '@components/sections/ProjectGrid.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+
+const [services, projects, segments, contact] = await Promise.all([
+  container.catalog.list(),
+  container.portfolio.list(),
+  container.portfolio.segments(),
+  container.contact(),
+]);
+
+const groups = [
+  { name: 'service', label: 'Serviço', options: services.map((s) => ({ value: s.slug, label: s.title })) },
+  { name: 'segment', label: 'Cliente', options: segments.map((s) => ({ value: s, label: SEGMENT_LABELS[s] })) },
+];
+---
+
+<BaseLayout title="Portfólio" description="Projetos de cenografia, esculturas, murais e espaços temáticos da Omne Criações.">
+  <section class="container page">
+    <SectionHeading
+      as="h1"
+      eyebrow="Portfólio"
+      title="Projetos realizados"
+      intro="Filtre por tipo de serviço ou de cliente para encontrar trabalhos parecidos com o que você precisa."
+    />
+
+    <form class="filters" data-portfolio-filter aria-label="Filtrar projetos">
+      {
+        groups.map((group) => (
+          <fieldset>
+            <legend data-sk="text">{group.label}</legend>
+            <div class="chips">
+              {[{ value: 'todos', label: 'Todos' }, ...group.options].map((option) => (
+                <label class="chip" data-sk="block">
+                  <input type="radio" name={group.name} value={option.value} checked={option.value === 'todos'} />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ))
+      }
+    </form>
+
+    <ProjectGrid projects={projects} services={services} />
+    <p class="empty" data-portfolio-empty hidden>Nenhum projeto com esses filtros ainda.</p>
+  </section>
+
+  <CtaBand whatsappLink={contact.whatsappLink()} />
+</BaseLayout>
+
+<script>
+  import { PortfolioFilter } from '@scripts/portfolio-filter';
+
+  const form = document.querySelector<HTMLFormElement>('[data-portfolio-filter]');
+  const empty = document.querySelector<HTMLElement>('[data-portfolio-empty]');
+  if (form && empty) {
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-project-grid] > [data-services]')];
+    const params = new URLSearchParams(location.search);
+    new PortfolioFilter(form, cards, empty).start({
+      service: params.get('servico') ?? 'todos',
+      segment: params.get('cliente') ?? 'todos',
+    });
+  }
+</script>
+
+<style>
+  .page {
+    padding-block: var(--space-9);
+  }
+
+  .filters {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-7);
+  }
+
+  fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  legend {
+    float: left;
+    min-width: 5rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--eyebrow-tracking);
+    text-transform: uppercase;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .chip {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .chip input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .chip span {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: var(--text-sm);
+    transition: all var(--duration) var(--ease-out);
+  }
+
+  .chip input:checked + span {
+    border-color: var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .empty {
+    padding: var(--space-8) 0;
+    color: var(--color-ink-soft);
+    text-align: center;
+  }
+</style>

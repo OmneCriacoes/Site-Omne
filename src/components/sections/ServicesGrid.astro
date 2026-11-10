@@ -1,0 +1,41 @@
+---
+import type { Service } from '@domain/entities';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import ServiceCard from '@components/ui/ServiceCard.astro';
+
+interface Props {
+  services: readonly Service[];
+  showHeading?: boolean;
+}
+
+const { services, showHeading = true } = Astro.props;
+---
+
+<section class="section" id="servicos">
+  <div class="container">
+    {
+      showHeading && (
+        <SectionHeading
+          eyebrow="O que fazemos"
+          title="Do ateliê para o seu espaço"
+          intro="Cinco frentes de trabalho que podem ser contratadas separadas ou combinadas em um único projeto."
+        />
+      )
+    }
+    <div class="grid">
+      {services.map((service, index) => <ServiceCard service={service} index={index} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--space-9);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+    gap: var(--space-6) var(--space-5);
+  }
+</style>

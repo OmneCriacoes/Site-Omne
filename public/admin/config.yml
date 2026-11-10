@@ -1,0 +1,159 @@
+# Painel de conteúdo do site (Sveltia CMS).
+# Os campos espelham os esquemas de src/content.config.ts: ao mudar um, mude o outro.
+
+backend:
+  name: github
+  repo: OmneCriacoes/Site-Omne
+  branch: main
+  commit_messages:
+    create: 'Conteúdo: cria {{collection}} "{{slug}}"'
+    update: 'Conteúdo: atualiza {{collection}} "{{slug}}"'
+    delete: 'Conteúdo: remove {{collection}} "{{slug}}"'
+    uploadMedia: 'Conteúdo: envia imagem "{{path}}"'
+    deleteMedia: 'Conteúdo: remove imagem "{{path}}"'
+
+locale: pt
+site_url: https://omnecriacoes.com
+display_url: https://omnecriacoes.com
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: projects
+    label: Projetos
+    label_singular: Projeto
+    description: Trabalhos exibidos no portfólio. Marque "Destaque" para aparecer na página inicial.
+    folder: src/content/projects
+    create: true
+    slug: '{{slug}}'
+    summary: '{{title}} ({{year}})'
+    sortable_fields: [title, year]
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: summary, label: Resumo, widget: text, hint: Uma ou duas frases para o cartão do portfólio. }
+      - name: services
+        label: Serviços
+        widget: relation
+        collection: services
+        value_field: '{{slug}}'
+        search_fields: [title]
+        display_fields: [title]
+        multiple: true
+      - name: segment
+        label: Tipo de cliente
+        widget: select
+        options:
+          - { label: Prefeituras e poder público, value: poder-publico }
+          - { label: Condomínios residenciais, value: residencial }
+          - { label: Empresas, value: corporativo }
+          - { label: Eventos, value: eventos }
+      - { name: client, label: Cliente, widget: string }
+      - { name: location, label: Local, widget: string }
+      - { name: year, label: Ano, widget: number, value_type: int }
+      - name: cover
+        label: Imagem de capa
+        widget: object
+        fields:
+          - { name: src, label: Imagem, widget: image }
+          - { name: alt, label: Descrição da imagem, widget: string, hint: Descreva a foto para leitores de tela e para o Google. }
+      - name: gallery
+        label: Galeria
+        widget: list
+        required: false
+        fields:
+          - { name: src, label: Imagem, widget: image }
+          - { name: alt, label: Descrição da imagem, widget: string }
+      - { name: featured, label: Destaque na página inicial, widget: boolean, default: false }
+      - { name: body, label: Texto do projeto, widget: markdown }
+
+  - name: services
+    label: Serviços
+    label_singular: Serviço
+    folder: src/content/services
+    create: true
+    slug: '{{slug}}'
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: Nome, widget: string }
+      - { name: summary, label: Resumo, widget: text }
+      - { name: highlights, label: Destaques, widget: list, field: { name: item, label: Item, widget: string } }
+      - name: cover
+        label: Imagem de capa
+        widget: object
+        fields:
+          - { name: src, label: Imagem, widget: image }
+          - { name: alt, label: Descrição da imagem, widget: string }
+      - { name: order, label: Ordem de exibição, widget: number, value_type: int, default: 99 }
+      - { name: body, label: Descrição completa, widget: markdown }
+
+  - name: clients
+    label: Clientes
+    label_singular: Cliente
+    folder: src/content/clients
+    format: json
+    extension: json
+    create: true
+    slug: '{{slug}}'
+    identifier_field: name
+    fields:
+      - { name: name, label: Nome, widget: string }
+      - name: segment
+        label: Tipo de cliente
+        widget: select
+        options:
+          - { label: Prefeituras e poder público, value: poder-publico }
+          - { label: Condomínios residenciais, value: residencial }
+          - { label: Empresas, value: corporativo }
+          - { label: Eventos, value: eventos }
+      - name: logo
+        label: Logo
+        widget: object
+        required: false
+        fields:
+          - { name: src, label: Imagem, widget: image }
+          - { name: alt, label: Descrição, widget: string }
+
+  - name: settings
+    label: Configurações do site
+    files:
+      - name: site
+        label: Geral
+        file: src/content/settings/site.json
+        format: json
+        fields:
+          - { name: name, label: Nome da empresa, widget: string }
+          - { name: tagline, label: Frase curta, widget: string }
+          - { name: description, label: Descrição para o Google, widget: text }
+          - name: theme
+            label: Visual do site
+            widget: select
+            options:
+              - { label: Galeria (claro), value: galeria }
+              - { label: Cinema (escuro), value: cinema }
+              - { label: Ateliê (vibrante), value: atelie }
+          - { name: showThemePreview, label: Mostrar seletor de propostas visuais, widget: boolean, hint: Desligue depois de escolher o visual. }
+          - { name: heroTitle, label: Título da página inicial, widget: string }
+          - { name: heroSubtitle, label: Subtítulo da página inicial, widget: text }
+          - name: heroImage
+            label: Imagem principal
+            widget: object
+            fields:
+              - { name: src, label: Imagem, widget: image }
+              - { name: alt, label: Descrição da imagem, widget: string }
+          - { name: aboutTitle, label: Título do Sobre, widget: string }
+          - { name: aboutText, label: Texto do Sobre, widget: text }
+          - name: stats
+            label: Números
+            widget: list
+            fields:
+              - { name: value, label: Valor, widget: string }
+              - { name: label, label: Legenda, widget: string }
+          - name: contact
+            label: Contato
+            widget: object
+            fields:
+              - { name: whatsapp, label: WhatsApp, widget: string, hint: Com DDD. Ex. (14) 99184-7209 }
+              - { name: phoneDisplay, label: Telefone exibido, widget: string }
+              - { name: email, label: E-mail, widget: string }
+              - { name: city, label: Cidade, widget: string }
+              - { name: instagram, label: Instagram, widget: string, required: false }

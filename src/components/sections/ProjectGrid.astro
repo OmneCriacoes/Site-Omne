@@ -1,0 +1,24 @@
+---
+import type { Project, Service } from '@domain/entities';
+import ProjectCard from '@components/ui/ProjectCard.astro';
+
+interface Props {
+  projects: readonly Project[];
+  services: readonly Service[];
+}
+
+const { projects, services } = Astro.props;
+const serviceTitles = new Map(services.map((service) => [service.slug, service.title]));
+---
+
+<div class="grid" data-project-grid>
+  {projects.map((project) => <ProjectCard project={project} serviceTitles={serviceTitles} />)}
+</div>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-7) var(--space-6);
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+import { container } from '@core/container';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import About from '@components/sections/About.astro';
+import ClientsStrip from '@components/sections/ClientsStrip.astro';
+import CtaBand from '@components/sections/CtaBand.astro';
+import FeaturedProjects from '@components/sections/FeaturedProjects.astro';
+import Hero from '@components/sections/Hero.astro';
+import ServicesGrid from '@components/sections/ServicesGrid.astro';
+
+const { site, catalog, portfolio, repository } = container;
+const [settings, services, featured, clients, contact] = await Promise.all([
+  site.getSettings(),
+  catalog.list(),
+  portfolio.featured(3),
+  repository.listClients(),
+  container.contact(),
+]);
+---
+
+<BaseLayout>
+  <Hero settings={settings} />
+  <ServicesGrid services={services} />
+  <FeaturedProjects projects={featured} services={services} />
+  <About settings={settings} />
+  <ClientsStrip clients={clients} />
+  <CtaBand whatsappLink={contact.whatsappLink()} />
+</BaseLayout>

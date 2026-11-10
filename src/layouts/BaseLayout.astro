@@ -1,0 +1,76 @@
+---
+import '@styles/global.css';
+import { container } from '@core/container';
+import { THEME_LABELS } from '@domain/entities';
+import { THEME_STORAGE_KEY } from '@scripts/theme-preview';
+import Footer from '@components/layout/Footer.astro';
+import Header from '@components/layout/Header.astro';
+import ThemeSwitcher from '@components/layout/ThemeSwitcher.astro';
+import WhatsAppButton from '@components/layout/WhatsAppButton.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  whatsappMessage?: string;
+}
+
+const settings = await container.site.getSettings();
+const contact = await container.contact();
+const { title, description = settings.description, image = settings.heroImage.src, whatsappMessage } = Astro.props;
+
+const pageTitle = title ? `${title} | ${settings.name}` : `${settings.name} | ${settings.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const whatsappLink = contact.whatsappLink(whatsappMessage);
+const previewThemes = settings.showThemePreview ? Object.keys(THEME_LABELS) : [];
+---
+
+<!doctype html>
+<html lang="pt-BR" data-theme={settings.theme}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Liga o esqueleto só quando há JavaScript; sem ele a página aparece direto. -->
+    <script is:inline>document.documentElement.classList.add('js', 'is-loading');</script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={settings.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+
+    {
+      previewThemes.length > 0 && (
+        <script is:inline define:vars={{ key: THEME_STORAGE_KEY, themes: previewThemes }}>
+          try {
+            const wanted = new URLSearchParams(location.search).get('tema') ?? localStorage.getItem(key);
+            if (wanted && themes.includes(wanted)) document.documentElement.dataset.theme = wanted;
+          } catch {}
+        </script>
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <Header siteName={settings.name} />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer settings={settings} whatsappLink={contact.whatsappLink()} />
+    <WhatsAppButton href={whatsappLink} />
+    {settings.showThemePreview && <ThemeSwitcher />}
+
+    <script>
+      import { SkeletonController } from '@scripts/skeleton';
+
+      new SkeletonController({ root: document.documentElement, maxWaitMs: 2500, minVisibleMs: 450 }).start();
+    </script>
+  </body>
+</html>

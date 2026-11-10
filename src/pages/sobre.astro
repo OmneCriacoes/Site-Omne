@@ -1,0 +1,19 @@
+---
+import { container } from '@core/container';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import About from '@components/sections/About.astro';
+import ClientsStrip from '@components/sections/ClientsStrip.astro';
+import CtaBand from '@components/sections/CtaBand.astro';
+
+const [settings, clients, contact] = await Promise.all([
+  container.site.getSettings(),
+  container.repository.listClients(),
+  container.contact(),
+]);
+---
+
+<BaseLayout title="Sobre" description={settings.aboutText}>
+  <About settings={settings} showLink={false} headingLevel="h1" />
+  <ClientsStrip clients={clients} />
+  <CtaBand whatsappLink={contact.whatsappLink()} />
+</BaseLayout>

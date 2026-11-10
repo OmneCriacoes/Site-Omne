@@ -1,0 +1,138 @@
+---
+import type { ContactInfo, Service } from '@domain/entities';
+import Button from '@components/ui/Button.astro';
+
+interface Props {
+  services: readonly Service[];
+  contact: ContactInfo;
+  selectedService?: string;
+}
+
+const { services, contact, selectedService } = Astro.props;
+---
+
+<form class="form" data-quote-form data-whatsapp={contact.whatsapp} data-email={contact.email}>
+  <div class="field field--full">
+    <label for="name" data-sk="text">Seu nome</label>
+    <input id="name" name="name" autocomplete="name" required data-sk="block" />
+  </div>
+
+  <div class="field">
+    <label for="service" data-sk="text">Serviço</label>
+    <select id="service" name="service" required data-sk="block">
+      <option value="">Selecione</option>
+      {
+        services.map((service) => (
+          <option value={service.title} data-slug={service.slug} selected={service.slug === selectedService}>
+            {service.title}
+          </option>
+        ))
+      }
+      <option value="Outro">Outro</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="eventDate" data-sk="text">Data do evento ou entrega</label>
+    <input id="eventDate" name="eventDate" type="date" data-sk="block" />
+  </div>
+
+  <div class="field">
+    <label for="location" data-sk="text">Cidade e local</label>
+    <input id="location" name="location" placeholder="Ex.: Praça central, Bauru" data-sk="block" />
+  </div>
+
+  <div class="field">
+    <label for="budget" data-sk="text">Orçamento estimado</label>
+    <select id="budget" name="budget" data-sk="block">
+      <option value="">Prefiro não informar</option>
+      <option>Até R$ 5 mil</option>
+      <option>R$ 5 mil a R$ 20 mil</option>
+      <option>R$ 20 mil a R$ 50 mil</option>
+      <option>Acima de R$ 50 mil</option>
+    </select>
+  </div>
+
+  <div class="field field--full">
+    <label for="message" data-sk="text">Conte sobre o projeto</label>
+    <textarea id="message" name="message" rows="5" placeholder="Tema, tamanho do espaço, referências..." data-sk="block"
+    ></textarea>
+  </div>
+
+  <div class="actions field--full">
+    <Button type="submit" name="channel" value="whatsapp">Enviar pelo WhatsApp</Button>
+    <Button type="submit" name="channel" value="email" variant="outline">Enviar por e-mail</Button>
+  </div>
+  <p class="note field--full" data-sk="text">
+    Ao enviar, abrimos o WhatsApp ou o seu e-mail com a mensagem pronta. Nenhum dado fica salvo no site.
+  </p>
+</form>
+
+<script>
+  import { ContactService } from '@application/ContactService';
+  import { QuoteForm } from '@scripts/quote-form';
+
+  const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
+  if (form) {
+    const contact = new ContactService(form.dataset.whatsapp ?? '', form.dataset.email ?? '');
+    new QuoteForm(form, contact, (url) => window.open(url, '_blank', 'noopener')).start();
+  }
+</script>
+
+<style>
+  .form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .field--full {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    justify-self: start;
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--color-accent);
+    outline: none;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .note {
+    color: var(--color-ink-soft);
+    font-size: var(--text-xs);
+  }
+
+  @media (max-width: 640px) {
+    .form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

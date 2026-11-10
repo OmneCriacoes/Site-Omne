@@ -1,0 +1,116 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { container } from '@core/container';
+import type { Service } from '@domain/entities';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CtaBand from '@components/sections/CtaBand.astro';
+import ProjectGrid from '@components/sections/ProjectGrid.astro';
+import Button from '@components/ui/Button.astro';
+import Media from '@components/ui/Media.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+
+export const getStaticPaths = (async () => {
+  const services = await container.catalog.list();
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+const [services, projects, contact] = await Promise.all([
+  container.catalog.list(),
+  container.portfolio.list({ service: service.slug }),
+  container.contact(),
+]);
+const greeting = contact.serviceGreeting(service.title);
+const whatsappLink = contact.whatsappLink(greeting);
+---
+
+<BaseLayout title={service.title} description={service.summary} image={service.cover.src} whatsappMessage={greeting}>
+  <section class="container detail">
+    <div class="text">
+      <SectionHeading as="h1" eyebrow="Serviço" title={service.title} intro={service.summary} />
+      <div class="prose" data-sk="text" set:html={service.descriptionHtml} />
+      {
+        service.highlights.length > 0 && (
+          <ul class="highlights">
+            {service.highlights.map((item) => (
+              <li data-sk="text">{item}</li>
+            ))}
+          </ul>
+        )
+      }
+      <div class="actions">
+        <Button href={whatsappLink} target="_blank" rel="noopener">Pedir orçamento pelo WhatsApp</Button>
+        <Button href={`/contato?servico=${service.slug}`} variant="outline">Formulário de orçamento</Button>
+      </div>
+    </div>
+    <Media image={service.cover} ratio="4 / 5" eager />
+  </section>
+
+  {
+    projects.length > 0 && (
+      <section class="container related">
+        <SectionHeading eyebrow="Portfólio" title={`Projetos de ${service.title.toLowerCase()}`} />
+        <ProjectGrid projects={projects} services={services} />
+      </section>
+    )
+  }
+
+  <CtaBand whatsappLink={whatsappLink} />
+</BaseLayout>
+
+<style>
+  .detail {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--space-8);
+    align-items: start;
+    padding-block: var(--space-9);
+  }
+
+  .text {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .text :global(.heading) {
+    margin-bottom: 0;
+  }
+
+  .prose {
+    color: var(--color-ink-soft);
+    font-size: var(--text-lg);
+  }
+
+  .highlights {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .highlights li {
+    padding-left: var(--space-5);
+    border-left: 2px solid var(--color-accent);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .related {
+    padding-bottom: var(--space-9);
+  }
+
+  @media (max-width: 860px) {
+    .detail {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

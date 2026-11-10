@@ -1,0 +1,49 @@
+---
+import Icon from '@components/ui/Icon.astro';
+
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+---
+
+<a class="float" href={href} target="_blank" rel="noopener" aria-label="Conversar pelo WhatsApp">
+  <Icon name="chat" size={24} />
+  <span>WhatsApp</span>
+</a>
+
+<style>
+  .float {
+    position: fixed;
+    right: var(--gutter);
+    bottom: var(--space-5);
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    border-radius: 999px;
+    background: #1f8f4e;
+    color: #ffffff;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.2);
+    transition: transform var(--duration) var(--ease-out);
+  }
+
+  .float:hover {
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 560px) {
+    .float span {
+      display: none;
+    }
+
+    .float {
+      padding: var(--space-4);
+    }
+  }
+</style>

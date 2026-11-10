@@ -1,0 +1,23 @@
+{
+  "name": "Omne Criações",
+  "tagline": "Cenografia e arte em grande escala",
+  "description": "Cenografia, esculturas, murais, mesas e espaços temáticos para prefeituras, condomínios, empresas e eventos.",
+  "theme": "galeria",
+  "showThemePreview": true,
+  "heroTitle": "Transformamos espaços em experiências",
+  "heroSubtitle": "Cenografia, esculturas, murais e espaços temáticos projetados e produzidos sob medida, do primeiro esboço à montagem no local.",
+  "heroImage": { "src": "/uploads/placeholders/hero.svg", "alt": "Cenário temático montado em praça pública" },
+  "aboutTitle": "Arte que cabe no projeto e no prazo",
+  "aboutText": "Texto provisório. A Omne Criações une ateliê de arte e produção cenográfica para entregar projetos completos: criação, modelagem, pintura, transporte e montagem. Atendemos prefeituras em datas comemorativas, condomínios residenciais, empresas e eventos, sempre com cronograma claro e acompanhamento do início ao fim.",
+  "stats": [
+    { "value": "00+", "label": "projetos entregues" },
+    { "value": "00", "label": "anos de ateliê" },
+    { "value": "00", "label": "cidades atendidas" }
+  ],
+  "contact": {
+    "whatsapp": "+55 (14) 99184-7209",
+    "phoneDisplay": "(14) 99184-7209",
+    "email": "celsosilva9583@gmail.com",
+    "city": "São Paulo, Brasil"
+  }
+}

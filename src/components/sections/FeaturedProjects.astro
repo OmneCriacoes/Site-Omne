@@ -1,0 +1,47 @@
+---
+import type { Project, Service } from '@domain/entities';
+import Button from '@components/ui/Button.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import ProjectGrid from './ProjectGrid.astro';
+
+interface Props {
+  projects: readonly Project[];
+  services: readonly Service[];
+}
+
+const { projects, services } = Astro.props;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="top">
+      <SectionHeading
+        eyebrow="Portfólio"
+        title="Projetos em destaque"
+        intro="Uma seleção de trabalhos para prefeituras, condomínios, empresas e eventos."
+      />
+      <Button href="/portfolio" variant="outline">Ver todos os projetos</Button>
+    </div>
+    <ProjectGrid projects={projects} services={services} />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--space-9);
+    background: var(--color-surface-alt);
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-5);
+    margin-bottom: var(--space-7);
+  }
+
+  .top :global(.heading) {
+    margin-bottom: 0;
+  }
+</style>

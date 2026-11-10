@@ -1,0 +1,171 @@
+---
+import { isCurrent, mainNavigation } from '@core/navigation';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+
+interface Props {
+  siteName: string;
+}
+
+const { siteName } = Astro.props;
+const { pathname } = Astro.url;
+---
+
+<header class="header">
+  <div class="container bar">
+    <a class="brand" href="/" aria-label={`${siteName}, página inicial`}>
+      <span class="mark" data-sk="block">O</span>
+      <span class="name" data-sk="text">{siteName}</span>
+    </a>
+
+    <button class="toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+      <span class="visually-hidden">Abrir menu</span>
+      <Icon name="menu" size={24} />
+    </button>
+
+    <nav id="menu" class="menu" aria-label="Principal" data-menu>
+      <ul>
+        {
+          mainNavigation.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href, pathname) ? 'page' : undefined}
+                data-sk="text"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <Button href="/contato" class="cta">Solicitar orçamento</Button>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open));
+    menu?.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--color-line);
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    height: var(--header-height);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+  }
+
+  .mark {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-ink);
+    color: var(--color-bg);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+  }
+
+  .name {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--display-weight);
+  }
+
+  .menu {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .menu ul {
+    display: flex;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .menu a:not(.btn) {
+    position: relative;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .menu a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    background: var(--color-accent);
+  }
+
+  .toggle {
+    display: none;
+    padding: var(--space-2);
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  @media (max-width: 860px) {
+    .toggle {
+      display: inline-flex;
+    }
+
+    .menu {
+      position: fixed;
+      inset: var(--header-height) 0 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--gutter);
+      background: var(--color-bg);
+      transform: translateX(100%);
+      transition: transform var(--duration) var(--ease-out);
+    }
+
+    .menu.is-open {
+      transform: none;
+    }
+
+    .menu ul {
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .menu a:not(.btn) {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+    }
+  }
+</style>

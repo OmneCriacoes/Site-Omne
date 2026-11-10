@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+---
+
+<BaseLayout title="Página não encontrada">
+  <section class="container page">
+    <SectionHeading
+      as="h1"
+      eyebrow="Erro 404"
+      title="Esta página saiu de cena"
+      intro="O endereço pode ter mudado. Que tal ver nossos projetos?"
+      align="center"
+    >
+      <Button href="/portfolio">Ver portfólio</Button>
+    </SectionHeading>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: var(--space-9);
+  }
+</style>

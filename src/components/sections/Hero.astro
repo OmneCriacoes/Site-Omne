@@ -1,0 +1,86 @@
+---
+import type { SiteSettings } from '@domain/entities';
+import Button from '@components/ui/Button.astro';
+import Media from '@components/ui/Media.astro';
+
+interface Props {
+  settings: SiteSettings;
+}
+
+const { settings } = Astro.props;
+---
+
+<section class="hero">
+  <Media image={settings.heroImage} ratio="auto" eager class="hero-media" />
+  <div class="container content">
+    <p class="eyebrow" data-sk="text">{settings.tagline}</p>
+    <h1 class="title" data-sk="text">{settings.heroTitle}</h1>
+    <p class="subtitle" data-sk="text">{settings.heroSubtitle}</p>
+    <div class="actions">
+      <Button href="/contato">Solicitar orçamento</Button>
+      <Button href="/portfolio" variant="outline">Ver portfólio</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    align-items: end;
+    min-height: min(88vh, 52rem);
+    color: var(--color-hero-ink);
+    isolation: isolate;
+  }
+
+  .hero :global(.hero-media) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 0;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-hero-overlay);
+    pointer-events: none;
+  }
+
+  :global(.is-loading) .hero::before {
+    display: none;
+  }
+
+  .content {
+    display: grid;
+    gap: var(--space-5);
+    padding-block: var(--space-9) var(--space-8);
+  }
+
+  .eyebrow {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--eyebrow-tracking);
+    text-transform: uppercase;
+  }
+
+  .title {
+    max-width: 16ch;
+    font-size: var(--text-4xl);
+  }
+
+  .subtitle {
+    max-width: 38rem;
+    font-size: var(--text-lg);
+    opacity: 0.9;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+</style>

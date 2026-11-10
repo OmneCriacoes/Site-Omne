@@ -1,0 +1,88 @@
+/*
+ * Esqueleto de carregamento espelhado.
+ *
+ * Não existe um layout de esqueleto separado: o próprio HTML da página vira o
+ * esqueleto enquanto <html> tem a classe `is-loading`. Todo elemento marcado
+ * com `data-sk` perde o conteúdo visual e recebe o brilho animado, então o
+ * esqueleto é sempre idêntico ao layout real, inclusive depois de mudanças.
+ *
+ *   data-sk="text"   linhas de texto (títulos, parágrafos, rótulos)
+ *   data-sk="block"  botões, campos, selos e outros blocos sólidos
+ *   data-sk="media"  imagens; continuam em esqueleto até a imagem carregar
+ *
+ * Sem JavaScript nada disso é ativado (a classe `js` vem do layout).
+ *
+ * O brilho percorre o elemento da direita para a esquerda.
+ */
+
+@keyframes sk-sweep {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+html.is-loading [data-sk],
+html.js [data-sk='media']:not(.is-ready) {
+  --sk-gradient: linear-gradient(
+    90deg,
+    var(--sk-base) 0%,
+    var(--sk-base) 35%,
+    var(--sk-highlight) 50%,
+    var(--sk-base) 65%,
+    var(--sk-base) 100%
+  );
+  background-image: var(--sk-gradient) !important;
+  background-color: var(--sk-base) !important;
+  background-size: 300% 100%;
+  background-attachment: scroll;
+  animation: sk-sweep 1.4s linear infinite;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+
+.is-loading [data-sk='text'] {
+  color: transparent !important;
+  border-radius: var(--radius-sm);
+  /* Mesma quebra de linha do texto real, mas a faixa termina onde o texto termina. */
+  width: fit-content;
+  /* Recorta o bloco em faixas na altura de cada linha, como texto real. */
+  -webkit-mask-image: repeating-linear-gradient(to bottom, #000 0 0.72lh, transparent 0.72lh 1lh);
+  mask-image: repeating-linear-gradient(to bottom, #000 0 0.72lh, transparent 0.72lh 1lh);
+  -webkit-mask-position: 0 0.14lh;
+  mask-position: 0 0.14lh;
+}
+
+.is-loading [data-sk='text'] *,
+.is-loading [data-sk='block'] * {
+  visibility: hidden;
+}
+
+.is-loading [data-sk='block'] {
+  color: transparent !important;
+}
+
+[data-sk='media'] {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-sk='media'] > img {
+  transition: opacity 500ms var(--ease-out);
+}
+
+.is-loading [data-sk='media'] > img,
+html.js [data-sk='media']:not(.is-ready) > img {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.is-loading [data-sk],
+  html.js [data-sk='media']:not(.is-ready) {
+    animation: none;
+    background-image: none !important;
+  }
+}
