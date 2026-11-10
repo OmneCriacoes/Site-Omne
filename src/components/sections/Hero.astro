@@ -36,7 +36,8 @@ const { settings } = Astro.props;
   .hero :global(.hero-media) {
     position: absolute;
     inset: 0;
-    z-index: -1;
+    /* Abaixo do ::before, que vem antes no DOM e por isso ficaria escondido atrás da foto. */
+    z-index: -2;
     border-radius: 0;
   }
 

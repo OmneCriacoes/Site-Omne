@@ -9,13 +9,13 @@ export interface ProjectFilter {
 export class PortfolioService {
   constructor(private readonly repository: ContentRepository) {}
 
-  /** Projetos do mais recente para o mais antigo. */
+  /** Projetos na ordem definida no painel; empates vão do mais recente para o mais antigo. */
   async list(filter: ProjectFilter = {}): Promise<readonly Project[]> {
     const projects = await this.repository.listProjects();
     return [...projects]
       .filter((project) => !filter.service || project.serviceSlugs.includes(filter.service))
       .filter((project) => !filter.segment || project.segment === filter.segment)
-      .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title, 'pt-BR'));
+      .sort((a, b) => a.order - b.order || (b.year ?? 0) - (a.year ?? 0) || a.title.localeCompare(b.title, 'pt-BR'));
   }
 
   /** Destaques escolhidos no painel; completa com os mais recentes se faltar. */

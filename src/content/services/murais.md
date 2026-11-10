@@ -1,11 +1,11 @@
 ---
 title: Murais
-summary: Pinturas artísticas em paredes, fachadas e painéis que dão identidade ao espaço.
+summary: "Painéis ilustrados e murais em relevo que contam uma história no espaço."
 highlights:
-  - Arte autoral ou a partir da identidade da marca
-  - Fachadas, áreas comuns e painéis removíveis
-  - Tintas próprias para cada superfície
-cover: { src: /uploads/placeholders/murais.svg, alt: Mural colorido pintado em parede de área comum }
+  - Murais pintados à mão
+  - Painéis em relevo e texturas
+  - Paredes expositivas e informativas
+cover: { src: /uploads/projetos/espaco-arvorar-duratex/01.webp, alt: "Murais feitos pela Omne" }
 order: 2
 ---
-Texto provisório. Do esboço à aplicação, desenvolvemos murais que conversam com a arquitetura e com quem circula pelo espaço. Trabalhamos em áreas comuns de condomínios, fachadas comerciais, escolas e eventos.
+Criamos murais para exposições, lojas e áreas comuns, do desenho à aplicação.

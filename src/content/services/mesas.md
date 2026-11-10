@@ -1,11 +1,11 @@
 ---
 title: Mesas
-summary: Mesas temáticas e cenográficas para festas, vitrines e ações de marca.
+summary: "Mesas cenográficas e balcões temáticos para eventos, lojas e ativações."
 highlights:
-  - Mesas de festa e de doces sob medida
-  - Peças cenográficas de apoio e displays
-  - Montagem e desmontagem no local
-cover: { src: /uploads/placeholders/mesas.svg, alt: Mesa temática decorada para evento }
+  - Mesas temáticas para eventos
+  - Balcões e bancadas de marca
+  - Expositores sob medida
+cover: { src: /uploads/placeholders/mesas.svg, alt: "Mesas" }
 order: 3
 ---
-Texto provisório. Projetamos mesas temáticas completas, com estrutura, painéis e elementos decorativos produzidos no nosso ateliê, prontos para montagem rápida no dia do evento.
+Peças funcionais com acabamento cenográfico, feitas para o uso real do evento.

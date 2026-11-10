@@ -59,6 +59,7 @@ function toProject({ id, data, rendered }: CollectionEntry<'projects'>): Project
     cover: data.cover,
     gallery: data.gallery,
     featured: data.featured,
+    order: data.order,
   };
 }
 

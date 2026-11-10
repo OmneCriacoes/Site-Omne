@@ -14,8 +14,8 @@ const { pathname } = Astro.url;
 <header class="header">
   <div class="container bar">
     <a class="brand" href="/" aria-label={`${siteName}, página inicial`}>
-      <span class="mark" data-sk="block">O</span>
-      <span class="name" data-sk="text">{siteName}</span>
+      <img class="logo" src="/uploads/logo-omne.svg" alt="" width="118" height="45" data-sk="block" />
+      <span class="visually-hidden">{siteName}</span>
     </a>
 
     <button class="toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
@@ -78,6 +78,16 @@ const { pathname } = Astro.url;
     align-items: center;
     gap: var(--space-3);
     text-decoration: none;
+  }
+
+  .logo {
+    display: block;
+    width: 118px;
+    height: auto;
+  }
+
+  :global([data-theme='cinema']) .logo {
+    filter: brightness(0) invert(1);
   }
 
   .mark {

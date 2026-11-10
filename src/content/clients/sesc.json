@@ -1,0 +1,8 @@
+{
+  "name": "SESC",
+  "segment": "corporativo",
+  "logo": {
+    "src": "/uploads/clientes/sesc.svg",
+    "alt": "SESC"
+  }
+}

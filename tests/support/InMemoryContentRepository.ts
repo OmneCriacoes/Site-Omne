@@ -45,6 +45,7 @@ export function aProject(overrides: Partial<Project> & Pick<Project, 'slug'>): P
     cover: image,
     gallery: [],
     featured: false,
+    order: 99,
     ...overrides,
   };
 }

@@ -1,0 +1,8 @@
+{
+  "name": "Philips",
+  "segment": "corporativo",
+  "logo": {
+    "src": "/uploads/clientes/philips.svg",
+    "alt": "Philips"
+  }
+}

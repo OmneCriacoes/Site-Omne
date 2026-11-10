@@ -1,0 +1,8 @@
+{
+  "name": "P&G",
+  "segment": "corporativo",
+  "logo": {
+    "src": "/uploads/clientes/pg.svg",
+    "alt": "P&G"
+  }
+}

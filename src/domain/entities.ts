@@ -36,10 +36,12 @@ export interface Project {
   readonly segment: ClientSegment;
   readonly clientName: string;
   readonly location: string;
-  readonly year: number;
+  readonly year?: number;
   readonly cover: Image;
   readonly gallery: readonly Image[];
   readonly featured: boolean;
+  /** Posição no portfólio; menor aparece primeiro. */
+  readonly order: number;
 }
 
 export interface Client {

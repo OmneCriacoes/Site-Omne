@@ -47,9 +47,9 @@ collections:
           - { label: Condomínios residenciais, value: residencial }
           - { label: Empresas, value: corporativo }
           - { label: Eventos, value: eventos }
-      - { name: client, label: Cliente, widget: string }
-      - { name: location, label: Local, widget: string }
-      - { name: year, label: Ano, widget: number, value_type: int }
+      - { name: client, label: Cliente, widget: string, required: false }
+      - { name: location, label: Local, widget: string, required: false }
+      - { name: year, label: Ano, widget: number, value_type: int, required: false }
       - name: cover
         label: Imagem de capa
         widget: object
@@ -64,7 +64,8 @@ collections:
           - { name: src, label: Imagem, widget: image }
           - { name: alt, label: Descrição da imagem, widget: string }
       - { name: featured, label: Destaque na página inicial, widget: boolean, default: false }
-      - { name: body, label: Texto do projeto, widget: markdown }
+      - { name: order, label: Ordem no portfólio (menor aparece primeiro), widget: number, value_type: int, default: 99 }
+      - { name: body, label: Texto do projeto, widget: markdown, required: false }
 
   - name: services
     label: Serviços

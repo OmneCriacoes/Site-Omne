@@ -31,12 +31,13 @@ const projects = defineCollection({
     summary: z.string(),
     services: z.array(z.string()).min(1),
     segment,
-    client: z.string(),
-    location: z.string(),
-    year: z.number().int(),
+    client: z.string().default(''),
+    location: z.string().default(''),
+    year: z.number().int().optional(),
     cover: image,
     gallery: z.array(image).default([]),
     featured: z.boolean().default(false),
+    order: z.number().int().default(99),
   }),
 });
 

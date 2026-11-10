@@ -1,0 +1,8 @@
+{
+  "name": "Coca-Cola",
+  "segment": "corporativo",
+  "logo": {
+    "src": "/uploads/clientes/coca-cola.svg",
+    "alt": "Coca-Cola"
+  }
+}

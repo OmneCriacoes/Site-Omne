@@ -1,11 +1,11 @@
 ---
 title: Esculturas
-summary: Peças em grande escala esculpidas em isopor, resina e fibra, com acabamento para áreas internas e externas.
+summary: "Personagens, mascotes e réplicas em escala, em isopor, resina ou fibra de vidro."
 highlights:
-  - Modelagem em isopor, resina e fibra de vidro
-  - Acabamento resistente a sol e chuva
-  - Peças personagem, monumentos e totens
-cover: { src: /uploads/placeholders/esculturas.svg, alt: Escultura em grande escala em fase de pintura }
+  - Personagens e mascotes de marca
+  - Réplicas de produtos em tamanho gigante
+  - Peças para exposições e intervenções urbanas
+cover: { src: /uploads/projetos/natal-em-shoppings/01.webp, alt: "Esculturas feitos pela Omne" }
 order: 1
 ---
-Texto provisório. Criamos esculturas sob medida para praças, fachadas, eventos e ambientes internos. Cada peça passa por estudo de forma, escala e estrutura antes da produção, garantindo segurança na montagem e durabilidade no uso.
+Esculpimos à mão e finalizamos com pintura artística, pensando em durabilidade para uso em público.

@@ -28,8 +28,8 @@ const facts = [
   { label: 'Cliente', value: project.clientName },
   { label: 'Segmento', value: SEGMENT_LABELS[project.segment] },
   { label: 'Local', value: project.location },
-  { label: 'Ano', value: String(project.year) },
-];
+  { label: 'Ano', value: project.year ? String(project.year) : '' },
+].filter((fact) => fact.value);
 ---
 
 <BaseLayout title={project.title} description={project.summary} image={project.cover.src}>

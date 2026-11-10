@@ -20,7 +20,7 @@
   --color-line: #ddd5c8;
   --color-accent: #8f6236;
   --color-accent-ink: #ffffff;
-  --color-hero-overlay: linear-gradient(180deg, rgb(28 26 23 / 0.1) 0%, rgb(28 26 23 / 0.65) 100%);
+  --color-hero-overlay: linear-gradient(90deg, rgb(28 26 23 / 0.8) 0%, rgb(28 26 23 / 0.45) 55%, rgb(28 26 23 / 0.15) 100%);
   --color-hero-ink: #ffffff;
 
   --sk-base: #e7e0d5;
@@ -74,7 +74,7 @@
   --color-line: #f0d9c4;
   --color-accent: #d9481f;
   --color-accent-ink: #ffffff;
-  --color-hero-overlay: linear-gradient(180deg, rgb(29 26 44 / 0.05) 0%, rgb(29 26 44 / 0.7) 100%);
+  --color-hero-overlay: linear-gradient(90deg, rgb(29 26 44 / 0.8) 0%, rgb(29 26 44 / 0.45) 55%, rgb(29 26 44 / 0.15) 100%);
   --color-hero-ink: #ffffff;
 
   --sk-base: #f6e4d3;

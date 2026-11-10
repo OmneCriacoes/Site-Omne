@@ -15,7 +15,7 @@ const tags = project.serviceSlugs.map((slug) => serviceTitles.get(slug) ?? slug)
   <a class="link" href={`/portfolio/${project.slug}`}>
     <Media image={project.cover} ratio="3 / 2" />
     <div class="body">
-      <p class="meta" data-sk="text">{SEGMENT_LABELS[project.segment]} · {project.year}</p>
+      <p class="meta" data-sk="text">{[SEGMENT_LABELS[project.segment], project.year].filter(Boolean).join(' · ')}</p>
       <h3 class="title" data-sk="text">{project.title}</h3>
       <p class="summary" data-sk="text">{project.summary}</p>
       <ul class="tags" aria-label="Serviços">
