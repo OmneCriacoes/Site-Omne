@@ -1,0 +1,99 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Midia from '../../components/Midia.astro';
+import CartaoProjeto from '../../components/CartaoProjeto.astro';
+import ChamadaOrcamento from '../../components/ChamadaOrcamento.astro';
+import { rotuloCategoria } from '../../lib/site';
+import { todosProjetos } from '../../lib/projetos';
+
+export async function getStaticPaths() {
+  const projetos = await todosProjetos();
+  return projetos.map((projeto) => ({
+    params: { slug: projeto.id },
+    props: {
+      projeto,
+      relacionados: projetos
+        .filter((p) => p.id !== projeto.id && p.data.categorias.some((c) => projeto.data.categorias.includes(c)))
+        .slice(0, 3),
+    },
+  }));
+}
+
+const { projeto, relacionados } = Astro.props;
+const { titulo, resumo, cliente, local, ano, categorias, capa, galeria } = projeto.data;
+const { Content } = await render(projeto);
+const fotos = galeria.length ? galeria : [{ imagem: capa, legenda: '' }];
+const ficha = [
+  ['Cliente', cliente],
+  ['Local', local],
+  ['Ano', ano ? String(ano) : ''],
+  ['Serviços', categorias.map(rotuloCategoria).join(', ')],
+].filter(([, valor]) => valor);
+---
+
+<Base titulo={titulo} descricao={resumo} imagem={capa.src}>
+  <article>
+    <header class="container topo">
+      <a class="voltar" href="/projetos/">← Todos os projetos</a>
+      <h1>{titulo}</h1>
+      <div class="resumo">
+        <div class="texto"><p class="lead">{resumo}</p><Content /></div>
+        <dl>
+          {ficha.map(([rotulo, valor]) => (<div><dt>{rotulo}</dt><dd>{valor}</dd></div>))}
+        </dl>
+      </div>
+    </header>
+
+    <div class="container galeria">
+      {fotos.map((foto, i) => (
+        <figure class:list={{ larga: i % 3 === 0 }}>
+          <Midia
+            src={foto.imagem}
+            alt={foto.legenda || `${titulo}, foto ${i + 1}`}
+            proporcao={i % 3 === 0 ? '16 / 10' : '4 / 5'}
+            tamanhos={i % 3 === 0 ? '100vw' : '(max-width: 760px) 100vw, 50vw'}
+            larguras={[640, 1024, 1600]}
+            prioridade={i === 0}
+          />
+          {foto.legenda && <figcaption>{foto.legenda}</figcaption>}
+        </figure>
+      ))}
+    </div>
+  </article>
+
+  <ChamadaOrcamento titulo="Quer algo parecido?" texto="Conte o que você precisa e usamos este projeto como ponto de partida." />
+
+  {relacionados.length > 0 && (
+    <section class="secao container" aria-labelledby="titulo-relacionados">
+      <div class="cabecalho-secao"><div><h2 id="titulo-relacionados">Projetos parecidos</h2></div></div>
+      <div class="relacionados">
+        {relacionados.map((p) => <CartaoProjeto projeto={p} />)}
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .topo { display: grid; gap: 20px; padding-block: clamp(32px, 5vw, 64px) 40px; }
+  .voltar { font-weight: 600; text-decoration: none; font-size: var(--t-pequeno); }
+  .resumo { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 32px 64px; align-items: start; }
+  .texto { display: grid; gap: 14px; max-width: 62ch; }
+  .lead { font-size: 1.2rem; color: var(--c-tinta); }
+  dl { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--c-linha); }
+  dl div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--c-linha); }
+  dt { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-suave); font-weight: 600; padding-top: 3px; }
+  dd { margin: 0; color: var(--c-tinta); }
+
+  .galeria { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  figure { margin: 0; display: grid; gap: 8px; }
+  figure.larga { grid-column: 1 / -1; }
+  figcaption { font-size: var(--t-pequeno); color: var(--c-suave); }
+  .relacionados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+
+  @media (max-width: 760px) {
+    .resumo { grid-template-columns: 1fr; }
+    .galeria { grid-template-columns: 1fr; }
+    .relacionados { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+import Cabecalho from '../components/Cabecalho.astro';
+import Rodape from '../components/Rodape.astro';
+import BotaoWhatsApp from '../components/BotaoWhatsApp.astro';
+import { site } from '../lib/site';
+
+interface Props {
+  titulo?: string;
+  descricao?: string;
+  imagem?: string;
+}
+
+const { titulo, descricao = site.descricao, imagem } = Astro.props;
+const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : `${site.nome} | Cenografia, esculturas e espaços temáticos`;
+const canonica = new URL(Astro.url.pathname, Astro.site);
+const imagemSocial = imagem ? new URL(imagem, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonica} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#005273" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={site.nome} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonica} />
+    {imagemSocial && <meta property="og:image" content={imagemSocial} />}
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+    <Cabecalho />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Rodape />
+    <BotaoWhatsApp />
+    <script>
+      import { revelarMidias } from '../lib/skeleton';
+      revelarMidias(document);
+    </script>
+  </body>
+</html>
+
+<style>
+  .pular {
+    position: absolute;
+    left: 12px;
+    top: -60px;
+    z-index: 100;
+    background: var(--c-tinta);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: var(--raio);
+  }
+  .pular:focus { top: 12px; }
+</style>

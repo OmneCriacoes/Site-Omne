@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import CartaoProjeto from '../../components/CartaoProjeto.astro';
+import ChamadaOrcamento from '../../components/ChamadaOrcamento.astro';
+import { listaCategorias } from '../../lib/site';
+import { todosProjetos } from '../../lib/projetos';
+
+const projetos = await todosProjetos();
+const categoriasUsadas = listaCategorias.filter(([chave]) => projetos.some((p) => p.data.categorias.includes(chave)));
+---
+
+<Base titulo="Projetos" descricao="Esculturas, murais, espaços temáticos e cenografia feitos pela Omne Criações para shoppings, marcas e instituições.">
+  <section class="container topo">
+    <p class="rotulo">Portfólio</p>
+    <h1>Projetos</h1>
+    <p class="lead">Uma seleção de peças e espaços que criamos. Filtre por tipo de serviço.</p>
+  </section>
+
+  <section class="container" aria-label="Lista de projetos">
+    <div class="filtros" role="group" aria-label="Filtrar por categoria">
+      <button type="button" data-filtro="todos" aria-pressed="true">Todos</button>
+      {categoriasUsadas.map(([chave, rotulo]) => (
+        <button type="button" data-filtro={chave} aria-pressed="false">{rotulo}</button>
+      ))}
+    </div>
+    <div class="grade">
+      {projetos.map((p, i) => <CartaoProjeto projeto={p} prioridade={i < 3} />)}
+    </div>
+  </section>
+
+  <ChamadaOrcamento />
+</Base>
+
+<script>
+  import { criarFiltro } from '../../lib/filtro-projetos';
+
+  const url = new URL(window.location.href);
+  criarFiltro({
+    botoes: [...document.querySelectorAll<HTMLButtonElement>('[data-filtro]')],
+    itens: [...document.querySelectorAll<HTMLElement>('.grade [data-categorias]')],
+    lerInicial: () => url.searchParams.get('categoria'),
+    gravar: (categoria) => {
+      if (categoria === 'todos') url.searchParams.delete('categoria');
+      else url.searchParams.set('categoria', categoria);
+      history.replaceState(null, '', url);
+    },
+  });
+</script>
+
+<style>
+  .topo { display: grid; gap: 16px; padding-block: clamp(40px, 6vw, 80px) 32px; }
+  .lead { font-size: 1.15rem; max-width: 52ch; }
+  .filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+  .filtros button {
+    font: 500 0.92rem var(--f-texto);
+    color: var(--c-texto);
+    background: transparent;
+    border: 1px solid #cfdde2;
+    border-radius: 999px;
+    padding: 9px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .filtros button:hover { border-color: var(--c-marca); color: var(--c-marca); }
+  .filtros button[aria-pressed='true'] { background: var(--c-tinta); border-color: var(--c-tinta); color: #fff; }
+  .grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; }
+  @media (max-width: 900px) { .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 480px) { .grade { gap: 28px 14px; } }
+</style>

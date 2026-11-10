@@ -1,0 +1,136 @@
+# Painel de conteúdo (Sveltia CMS). Cada alteração salva aqui vira um commit na branch main,
+# e o GitHub Actions publica o site de novo em poucos minutos.
+backend:
+  name: github
+  repo: OmneCriacoes/Site-Omne
+  branch: main
+  commit_messages:
+    create: 'Conteúdo: cria {{collection}} "{{slug}}"'
+    update: 'Conteúdo: atualiza {{collection}} "{{slug}}"'
+    delete: 'Conteúdo: remove {{collection}} "{{slug}}"'
+    uploadMedia: 'Conteúdo: envia "{{path}}"'
+    deleteMedia: 'Conteúdo: apaga "{{path}}"'
+
+locale: pt
+site_url: https://omnecriacoes.com
+display_url: https://omnecriacoes.com
+logo_url: /favicon.svg
+
+media_folder: src/assets/uploads
+public_folder: ../../assets/uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  - name: projetos
+    label: Projetos
+    label_singular: Projeto
+    description: Fotos e informações de cada trabalho do portfólio.
+    folder: src/content/projetos
+    path: '{{slug}}/index'
+    media_folder: ''
+    public_folder: ''
+    create: true
+    slug: '{{titulo}}'
+    identifier_field: titulo
+    summary: '{{titulo}} · {{cliente}}'
+    sortable_fields: [ordem, titulo]
+    fields:
+      - { name: titulo, label: Título, widget: string }
+      - { name: resumo, label: Resumo (uma frase), widget: text }
+      - { name: cliente, label: Cliente, widget: string, required: false, default: '' }
+      - { name: local, label: Local, widget: string, required: false, default: '', hint: 'Exemplo: Bauru, SP' }
+      - { name: ano, label: Ano, widget: number, value_type: int, required: false }
+      - name: categorias
+        label: Serviços
+        widget: select
+        multiple: true
+        min: 1
+        options:
+          - { label: Esculturas, value: esculturas }
+          - { label: Murais, value: murais }
+          - { label: Mesas, value: mesas }
+          - { label: Espaços temáticos, value: espacos-tematicos }
+          - { label: Projetos, value: projetos }
+      - { name: capa, label: Foto de capa, widget: image }
+      - name: galeria
+        label: Galeria de fotos
+        widget: list
+        required: false
+        summary: '{{fields.legenda}}'
+        fields:
+          - { name: imagem, label: Foto, widget: image }
+          - { name: legenda, label: Legenda, widget: string, required: false, default: '' }
+      - { name: destaque, label: Mostrar na página inicial, widget: boolean, default: false }
+      - { name: ordem, label: Ordem (menor aparece primeiro), widget: number, value_type: int, default: 100 }
+      - { name: body, label: Texto do projeto, widget: markdown, required: false }
+
+  - name: servicos
+    label: Serviços
+    label_singular: Serviço
+    folder: src/content/servicos
+    create: false
+    delete: false
+    identifier_field: titulo
+    fields:
+      - { name: titulo, label: Nome, widget: string }
+      - { name: categoria, label: Categoria (não alterar), widget: hidden }
+      - { name: chamada, label: Frase de apresentação, widget: text }
+      - { name: itens, label: O que inclui, widget: list, field: { name: item, label: Item, widget: string } }
+      - { name: ordem, label: Ordem, widget: number, value_type: int }
+      - { name: body, label: Texto, widget: markdown, required: false }
+
+  - name: site
+    label: Site
+    files:
+      - name: geral
+        label: Contato e textos principais
+        file: src/content/site/geral.json
+        fields:
+          - { name: nome, label: Nome da empresa, widget: string }
+          - { name: descricao, label: Descrição curta (Google e rodapé), widget: text }
+          - { name: whatsapp, label: WhatsApp com DDI e DDD, widget: string, hint: 'Somente números. Exemplo: 5514991847209' }
+          - { name: email, label: E-mail, widget: string, required: false }
+          - { name: instagram, label: Link do Instagram, widget: string, required: false }
+          - { name: cidade, label: Cidade, widget: string }
+          - { name: atendimento, label: Área de atendimento, widget: string }
+          - name: hero
+            label: Destaque da página inicial
+            widget: object
+            fields:
+              - { name: titulo, label: Título, widget: string }
+              - { name: texto, label: Texto, widget: text }
+          - name: sobre
+            label: Página Sobre
+            widget: object
+            fields:
+              - { name: titulo, label: Título, widget: string }
+              - { name: texto, label: Texto, widget: text }
+      - name: processo
+        label: Etapas do processo
+        file: src/content/site/processo.json
+        fields:
+          - name: etapas
+            label: Etapas
+            widget: list
+            root: true
+            fields:
+              - { name: id, label: Identificador, widget: string }
+              - { name: titulo, label: Título, widget: string }
+              - { name: texto, label: Texto, widget: text }
+      - name: clientes
+        label: Logos de clientes
+        file: src/content/site/clientes.json
+        media_folder: /src/assets/clientes
+        public_folder: ../../assets/clientes
+        fields:
+          - name: clientes
+            label: Clientes
+            widget: list
+            root: true
+            fields:
+              - { name: id, label: Identificador, widget: string }
+              - { name: nome, label: Nome, widget: string }
+              - { name: logo, label: Logo (SVG ou PNG), widget: image }

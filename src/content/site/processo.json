@@ -1,0 +1,6 @@
+[
+  { "id": "1-briefing", "titulo": "Briefing", "texto": "Você conta a ideia, o local, as medidas e a data do evento. Fotos e referências ajudam." },
+  { "id": "2-projeto", "titulo": "Projeto", "texto": "Desenhamos a peça ou o espaço, definimos materiais e enviamos o orçamento com prazo." },
+  { "id": "3-producao", "titulo": "Produção", "texto": "Modelagem, escultura, pintura e acabamento são feitos na nossa oficina." },
+  { "id": "4-montagem", "titulo": "Montagem", "texto": "Entregamos e montamos no local, prontos para a inauguração." }
+]

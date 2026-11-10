@@ -1,0 +1,17 @@
+[
+  { "id": "coca-cola", "nome": "Coca-Cola", "logo": "../../assets/clientes/coca-cola.svg" },
+  { "id": "sesc", "nome": "SESC", "logo": "../../assets/clientes/sesc.svg" },
+  { "id": "johnson-johnson", "nome": "Johnson & Johnson", "logo": "../../assets/clientes/johnson-johnson.svg" },
+  { "id": "pg", "nome": "P&G", "logo": "../../assets/clientes/pg.svg" },
+  { "id": "msp", "nome": "Mauricio de Sousa Produções", "logo": "../../assets/clientes/msp.svg" },
+  { "id": "sony", "nome": "Sony", "logo": "../../assets/clientes/sony.svg" },
+  { "id": "philips", "nome": "Philips", "logo": "../../assets/clientes/philips.svg" },
+  { "id": "sky", "nome": "SKY", "logo": "../../assets/clientes/sky.svg" },
+  { "id": "tam", "nome": "TAM", "logo": "../../assets/clientes/tam.svg" },
+  { "id": "tigre", "nome": "Tigre", "logo": "../../assets/clientes/tigre.svg" },
+  { "id": "pernambucanas", "nome": "Pernambucanas", "logo": "../../assets/clientes/pernambucanas.svg" },
+  { "id": "itautec", "nome": "Itautec", "logo": "../../assets/clientes/itautec.svg" },
+  { "id": "cna", "nome": "CNA", "logo": "../../assets/clientes/cna.svg" },
+  { "id": "unesp", "nome": "Unesp", "logo": "../../assets/clientes/unesp.svg" },
+  { "id": "usp-fob", "nome": "USP Faculdade de Odontologia de Bauru", "logo": "../../assets/clientes/usp-fob.svg" }
+]

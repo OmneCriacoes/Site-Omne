@@ -1,0 +1,35 @@
+---
+interface Props {
+  titulo?: string;
+  texto?: string;
+}
+
+const {
+  titulo = 'Tem um evento ou espaço em vista?',
+  texto = 'Conte o que você imagina. Respondemos pelo WhatsApp com as próximas etapas e uma estimativa de prazo.',
+} = Astro.props;
+---
+
+<section class="secao container" aria-labelledby="titulo-chamada">
+  <div class="chamada">
+    <div>
+      <h2 id="titulo-chamada">{titulo}</h2>
+      <p>{texto}</p>
+    </div>
+    <a class="botao" href="/orcamento/">Pedir orçamento</a>
+  </div>
+</section>
+
+<style>
+  .chamada {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 48px;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(28px, 5vw, 56px);
+    background: #e6f7f3;
+    border-radius: var(--raio);
+  }
+  .chamada > div { display: grid; gap: 12px; max-width: 52ch; }
+</style>

@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import FormularioOrcamento from '../components/FormularioOrcamento.astro';
+import { site } from '../lib/site';
+import { limparNumero } from '../lib/whatsapp';
+
+const telefone = limparNumero(site.whatsapp);
+const telefoneLegivel = telefone.replace(/^55(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+---
+
+<Base titulo="Pedir orçamento" descricao="Peça um orçamento de cenografia, esculturas, murais, mesas ou espaços temáticos. Resposta pelo WhatsApp.">
+  <section class="container pagina">
+    <div class="intro">
+      <p class="rotulo">Orçamento</p>
+      <h1>Conte o que você imagina</h1>
+      <p class="lead">Preencha o essencial e abrimos o WhatsApp com a mensagem pronta para você enviar. Quanto mais detalhes, mais rápido conseguimos estimar prazo e valor.</p>
+      <dl class="contatos">
+        <div><dt>WhatsApp</dt><dd><a href={`https://wa.me/${telefone}`}>{telefoneLegivel}</a></dd></div>
+        {site.email && <div><dt>E-mail</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>}
+        <div><dt>Base</dt><dd>{site.cidade} · {site.atendimento}</dd></div>
+      </dl>
+    </div>
+    <div class="caixa">
+      <FormularioOrcamento />
+    </div>
+  </section>
+</Base>
+
+<script>
+  const servico = new URLSearchParams(window.location.search).get('servico');
+  const select = document.querySelector<HTMLSelectElement>('#orc-servico');
+  const opcao = servico && select ? [...select.options].find((o) => o.dataset.chave === servico) : undefined;
+  if (select && opcao) select.value = opcao.value;
+</script>
+
+<style>
+  .pagina {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: start;
+    padding-block: clamp(40px, 6vw, 80px) 0;
+  }
+  .intro { display: grid; gap: 18px; }
+  .lead { font-size: 1.1rem; }
+  .contatos { margin: 8px 0 0; display: grid; border-top: 1px solid var(--c-linha); }
+  .contatos div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--c-linha); }
+  dt { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-suave); font-weight: 600; padding-top: 3px; }
+  dd { margin: 0; color: var(--c-tinta); overflow-wrap: anywhere; }
+  .caixa { background: var(--c-superficie); border: 1px solid var(--c-linha); padding: clamp(20px, 4vw, 40px); }
+  @media (max-width: 900px) { .pagina { grid-template-columns: 1fr; } }
+</style>

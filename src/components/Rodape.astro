@@ -1,0 +1,54 @@
+---
+import { navegacao, site } from '../lib/site';
+import { limparNumero } from '../lib/whatsapp';
+
+const telefone = limparNumero(site.whatsapp);
+const telefoneLegivel = telefone.replace(/^55(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+const ano = new Date().getFullYear();
+---
+
+<footer class="rodape">
+  <div class="container grade">
+    <div class="sobre">
+      <p class="nome">{site.nome}</p>
+      <p>{site.descricao}</p>
+    </div>
+    <nav aria-label="Rodapé">
+      <p class="titulo">Navegue</p>
+      <ul>
+        {navegacao.map((item) => <li><a href={item.href}>{item.rotulo}</a></li>)}
+        <li><a href="/orcamento/">Orçamento</a></li>
+      </ul>
+    </nav>
+    <div>
+      <p class="titulo">Contato</p>
+      <ul>
+        <li><a href={`https://wa.me/${telefone}`}>WhatsApp {telefoneLegivel}</a></li>
+        {site.email && <li><a href={`mailto:${site.email}`}>{site.email}</a></li>}
+        {site.instagram && <li><a href={site.instagram}>Instagram</a></li>}
+        <li>{site.cidade} · {site.atendimento}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="container base">
+    <p>© {ano} {site.nome}. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<style>
+  .rodape { background: var(--c-tinta); color: #b9cdd4; font-size: 0.95rem; margin-top: var(--secao); }
+  .grade {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 40px;
+    padding-block: 64px 40px;
+  }
+  .nome { font-family: var(--f-titulo); font-stretch: 115%; font-weight: 760; font-size: 1.3rem; color: #fff; margin-bottom: 10px; }
+  .sobre p:last-child { max-width: 42ch; }
+  .titulo { color: var(--c-menta); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 14px; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  a { color: #fff; text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .base { border-top: 1px solid #1d4352; padding-block: 20px 28px; font-size: var(--t-pequeno); }
+  @media (max-width: 760px) { .grade { grid-template-columns: 1fr; gap: 28px; } }
+</style>

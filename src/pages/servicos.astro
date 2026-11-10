@@ -1,0 +1,77 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import CartaoProjeto from '../components/CartaoProjeto.astro';
+import Processo from '../components/Processo.astro';
+import ChamadaOrcamento from '../components/ChamadaOrcamento.astro';
+import { projetosDaCategoria } from '../lib/projetos';
+
+const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
+const blocos = await Promise.all(
+  servicos.map(async (s) => ({
+    servico: s,
+    Content: (await render(s)).Content,
+    exemplos: (await projetosDaCategoria(s.data.categoria)).slice(0, 3),
+  })),
+);
+---
+
+<Base titulo="Serviços" descricao="Esculturas, murais, mesas, espaços temáticos e projetos cenográficos sob medida.">
+  <section class="container topo">
+    <p class="rotulo">Serviços</p>
+    <h1>O que a Omne faz</h1>
+    <p class="lead">Projetamos, fabricamos e montamos. Escolha o serviço para ver exemplos reais.</p>
+    <nav aria-label="Serviços nesta página">
+      <ul class="atalhos">
+        {servicos.map((s) => <li><a href={`#${s.data.categoria}`}>{s.data.titulo}</a></li>)}
+      </ul>
+    </nav>
+  </section>
+
+  {blocos.map(({ servico, Content, exemplos }) => (
+    <section class="container servico" id={servico.data.categoria} aria-labelledby={`t-${servico.data.categoria}`}>
+      <div class="info">
+        <h2 id={`t-${servico.data.categoria}`}>{servico.data.titulo}</h2>
+        <p class="chamada">{servico.data.chamada}</p>
+        <Content />
+        <ul class="itens">{servico.data.itens.map((item) => <li>{item}</li>)}</ul>
+        <a class="botao botao--contorno" href={`/orcamento/?servico=${servico.data.categoria}`}>Orçar {servico.data.titulo.toLowerCase()}</a>
+      </div>
+      {exemplos.length > 0 && (
+        <div class="exemplos">
+          {exemplos.map((p) => <CartaoProjeto projeto={p} />)}
+        </div>
+      )}
+    </section>
+  ))}
+
+  <Processo />
+  <ChamadaOrcamento />
+</Base>
+
+<style>
+  .topo { display: grid; gap: 16px; padding-block: clamp(40px, 6vw, 80px) 24px; }
+  .lead { font-size: 1.15rem; max-width: 52ch; }
+  .atalhos { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  .atalhos a { font-weight: 600; text-decoration: none; }
+  .servico {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+    gap: 32px 56px;
+    padding-block: 56px;
+    border-top: 1px solid var(--c-linha);
+    scroll-margin-top: 90px;
+  }
+  .info { display: grid; gap: 14px; align-content: start; }
+  .chamada { font-size: 1.1rem; color: var(--c-tinta); }
+  .itens { margin: 4px 0 8px; padding-left: 18px; display: grid; gap: 4px; }
+  .itens li::marker { color: var(--c-menta-texto); }
+  .info .botao { justify-self: start; }
+  .exemplos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-content: start; }
+  @media (max-width: 900px) {
+    .servico { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .exemplos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

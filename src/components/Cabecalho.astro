@@ -1,0 +1,111 @@
+---
+import logo from '../assets/logo-omne.svg?raw';
+import { navegacao } from '../lib/site';
+
+const atual = Astro.url.pathname;
+const ativo = (href: string) => atual === href || atual.startsWith(href);
+---
+
+<header class="cabecalho">
+  <div class="container barra">
+    <a class="marca" href="/" aria-label="Omne Criações, página inicial" set:html={logo} />
+
+    <button class="abrir" type="button" aria-expanded="false" aria-controls="menu-principal">
+      <span class="visualmente-oculto">Abrir menu</span>
+      <span class="hamburguer" aria-hidden="true"></span>
+    </button>
+
+    <nav id="menu-principal" class="menu" aria-label="Principal">
+      <ul>
+        {navegacao.map((item) => (
+          <li><a href={item.href} aria-current={ativo(item.href) ? 'page' : undefined}>{item.rotulo}</a></li>
+        ))}
+      </ul>
+      <a class="botao" href="/orcamento/">Pedir orçamento</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const botao = document.querySelector<HTMLButtonElement>('.cabecalho .abrir');
+  const menu = document.getElementById('menu-principal');
+  botao?.addEventListener('click', () => {
+    const aberto = botao.getAttribute('aria-expanded') === 'true';
+    botao.setAttribute('aria-expanded', String(!aberto));
+    menu?.classList.toggle('aberto', !aberto);
+  });
+</script>
+
+<style>
+  .cabecalho {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--c-fundo) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--c-linha);
+  }
+  .barra { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 72px; }
+  .marca { display: block; width: 118px; line-height: 0; }
+  .marca :global(svg) { width: 100%; height: auto; }
+
+  .menu { display: flex; align-items: center; gap: 32px; }
+  .menu ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+  .menu ul a {
+    color: var(--c-tinta);
+    text-decoration: none;
+    font-weight: 500;
+    padding-block: 6px;
+    border-bottom: 2px solid transparent;
+  }
+  .menu ul a:hover { border-color: var(--c-linha); }
+  .menu ul a[aria-current='page'] { border-color: var(--c-menta); }
+  .menu .botao { padding: 11px 18px; }
+
+  .abrir { display: none; }
+
+  @media (max-width: 820px) {
+    .abrir {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--c-linha);
+      border-radius: var(--raio);
+      background: var(--c-superficie);
+      cursor: pointer;
+    }
+    .hamburguer, .hamburguer::before, .hamburguer::after {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: var(--c-tinta);
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .hamburguer::before, .hamburguer::after { content: ''; position: absolute; left: 0; }
+    .hamburguer::before { top: -6px; }
+    .hamburguer::after { top: 6px; }
+    .abrir[aria-expanded='true'] .hamburguer { background: transparent; }
+    .abrir[aria-expanded='true'] .hamburguer::before { transform: translateY(6px) rotate(45deg); }
+    .abrir[aria-expanded='true'] .hamburguer::after { transform: translateY(-6px) rotate(-45deg); }
+
+    .menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+      padding: 16px var(--gutter) 24px;
+      background: var(--c-fundo);
+      border-bottom: 1px solid var(--c-linha);
+    }
+    .menu.aberto { display: flex; }
+    .menu ul { flex-direction: column; gap: 4px; }
+    .menu ul a { display: block; padding: 12px 0; font-size: 1.1rem; border-bottom-color: var(--c-linha); }
+    .menu .botao { justify-content: center; }
+  }
+</style>

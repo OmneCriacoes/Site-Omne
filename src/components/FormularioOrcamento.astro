@@ -1,0 +1,87 @@
+---
+import { listaCategorias, site } from '../lib/site';
+---
+
+<form class="orcamento" data-orcamento data-whatsapp={site.whatsapp} novalidate>
+  <div class="campo">
+    <label for="orc-nome">Seu nome <span aria-hidden="true">*</span></label>
+    <input id="orc-nome" name="nome" type="text" autocomplete="name" required />
+  </div>
+  <div class="campo">
+    <label for="orc-empresa">Empresa ou evento</label>
+    <input id="orc-empresa" name="empresa" type="text" autocomplete="organization" />
+  </div>
+  <div class="campo">
+    <label for="orc-servico">Serviço <span aria-hidden="true">*</span></label>
+    <select id="orc-servico" name="servico" required>
+      <option value="" disabled selected>Escolha uma opção</option>
+      {listaCategorias.map(([chave, rotulo]) => (
+        <option value={rotulo} data-chave={chave}>{rotulo}</option>
+      ))}
+      <option value="Outro / ainda não sei">Outro / ainda não sei</option>
+    </select>
+  </div>
+  <div class="campo">
+    <label for="orc-cidade">Cidade do evento</label>
+    <input id="orc-cidade" name="cidade" type="text" autocomplete="address-level2" />
+  </div>
+  <div class="campo">
+    <label for="orc-data">Data prevista</label>
+    <input id="orc-data" name="data" type="date" />
+  </div>
+  <div class="campo inteiro">
+    <label for="orc-mensagem">Conte sobre o projeto <span aria-hidden="true">*</span></label>
+    <textarea id="orc-mensagem" name="mensagem" rows="5" required placeholder="O que você imagina, medidas aproximadas, local e quantidade de peças."></textarea>
+  </div>
+  <div class="acoes inteiro">
+    <button class="botao" type="submit">Enviar pelo WhatsApp</button>
+    <p class="dica">Abrimos o WhatsApp com a sua mensagem pronta. É só tocar em enviar.</p>
+    <p class="aviso" data-aviso role="status" aria-live="polite"></p>
+  </div>
+</form>
+
+<script>
+  import { conectarFormularioOrcamento } from '../lib/formulario-orcamento';
+
+  document.querySelectorAll<HTMLFormElement>('form[data-orcamento]').forEach((form) => {
+    conectarFormularioOrcamento(form, {
+      numeroWhatsApp: form.dataset.whatsapp ?? '',
+      abrirLink: (url) => {
+        const aba = window.open(url, '_blank');
+        if (aba) aba.opener = null;
+        else window.location.assign(url);
+      },
+    });
+  });
+</script>
+
+<style>
+  .orcamento {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 24px;
+  }
+  .inteiro { grid-column: 1 / -1; }
+  .campo { display: grid; gap: 8px; min-width: 0; }
+  label { font-weight: 600; font-size: 0.95rem; color: var(--c-tinta); }
+  label span { color: var(--c-menta-texto); }
+  input, select, textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--c-tinta);
+    background: var(--c-superficie);
+    border: 1px solid #c9d7dc;
+    border-radius: var(--raio);
+    padding: 12px 14px;
+    min-height: 48px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  textarea { resize: vertical; min-height: 140px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--c-marca); box-shadow: 0 0 0 3px rgb(24 222 186 / 0.35); }
+  [aria-invalid='true'] { border-color: var(--c-erro); }
+  .acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+  .dica { font-size: var(--t-pequeno); color: var(--c-suave); }
+  .aviso { flex-basis: 100%; font-size: var(--t-pequeno); color: var(--c-tinta); font-weight: 500; }
+  .aviso:empty { display: none; }
+  @media (max-width: 640px) { .orcamento { grid-template-columns: 1fr; } }
+</style>
