@@ -34,13 +34,19 @@ const projetos = defineCollection({
 
 const servicos = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/servicos' }),
-  schema: z.object({
-    titulo: z.string(),
-    categoria,
-    chamada: z.string(),
-    itens: z.array(z.string()).default([]),
-    ordem: z.number().default(100),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      titulo: z.string(),
+      categoria,
+      chamada: z.string(),
+      /** Linha curta do menu (até 30 caracteres). */
+      menu: z.string().max(30).default(''),
+      itens: z.array(z.string()).default([]),
+      /** Foto de um trabalho deste serviço; sem foto, o serviço aparece só em texto. */
+      foto: image().optional(),
+      fotoAlt: z.string().default(''),
+      ordem: z.number().default(100),
+    }),
 });
 
 const clientes = defineCollection({

@@ -1,54 +1,65 @@
 ---
-import { navegacao, site } from '../lib/site';
-import { limparNumero } from '../lib/whatsapp';
+import { getCollection } from 'astro:content';
+import logo from '../assets/logo-omne.svg';
+import { site, linkWhatsApp } from '../lib/site';
 
-const telefone = limparNumero(site.whatsapp);
-const telefoneLegivel = telefone.replace(/^55(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
 const ano = new Date().getFullYear();
 ---
 
-<footer class="rodape">
-  <div class="container grade">
-    <div class="sobre">
-      <p class="nome">{site.nome}</p>
-      <p>{site.descricao}</p>
+<footer class="footer closing" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head">
+        <h2 id="close-h">Peça o orçamento do seu projeto</h2>
+        <p>Você descreve a ideia, o local e a data. A conversa segue pelo WhatsApp, com a mesma equipe que vai fazer a peça.</p>
+      </div>
+      <a class="btn btn--primary btn--xl" href="/orcamento/">Pedir orçamento<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8" /><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" /></svg></a>
     </div>
-    <nav aria-label="Rodapé">
-      <p class="titulo">Navegue</p>
-      <ul>
-        {navegacao.map((item) => <li><a href={item.href}>{item.rotulo}</a></li>)}
-        <li><a href="/orcamento/">Orçamento</a></li>
-      </ul>
-    </nav>
-    <div>
-      <p class="titulo">Contato</p>
-      <ul>
-        <li><a href={`https://wa.me/${telefone}`}>WhatsApp {telefoneLegivel}</a></li>
-        {site.email && <li><a href={`mailto:${site.email}`}>{site.email}</a></li>}
-        {site.instagram && <li><a href={site.instagram}>Instagram</a></li>}
-        <li>{site.cidade} · {site.atendimento}</li>
-      </ul>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="/"><img src={logo.src} alt="Omne Criações" width="94" height="40" /></a>
+          <p class="footer__lede">Cenografia e esculturas, de São Paulo para todo o Brasil.</p>
+        </div>
+        <div class="span-2 footer__col">
+          <h3>Serviços</h3>
+          <ul>{servicos.map((s) => <li><a href={`/servicos/#${s.data.categoria}`}>{s.data.titulo}</a></li>)}</ul>
+        </div>
+        <div class="span-2 footer__col">
+          <h3>Projetos</h3>
+          <ul>
+            <li><a href="/projetos/">Todos os projetos</a></li>
+            <li><a href="/projetos/#espacos-tematicos">Espaços temáticos</a></li>
+            <li><a href="/projetos/#esculturas">Esculturas</a></li>
+          </ul>
+        </div>
+        <div class="span-2 footer__col">
+          <h3>Sobre</h3>
+          <ul>
+            <li><a href="/sobre/">A oficina</a></li>
+            <li><a href="/sobre/#clientes">Clientes</a></li>
+          </ul>
+        </div>
+        <div class="span-2 footer__col">
+          <h3>Contato</h3>
+          <ul>
+            <li><a href={linkWhatsApp()}>WhatsApp</a></li>
+            <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+            <li>{site.cidade}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; {ano} {site.nome}</span>
+        <div class="socials"></div>
+        <span class="t-small">Marcas e logos de clientes pertencem aos seus donos.</span>
+      </div>
     </div>
-  </div>
-  <div class="container base">
-    <p>© {ano} {site.nome}. Todos os direitos reservados.</p>
   </div>
 </footer>
 
 <style>
-  .rodape { background: var(--c-tinta); color: #b9cdd4; font-size: 0.95rem; margin-top: var(--secao); }
-  .grade {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.4fr);
-    gap: 40px;
-    padding-block: 64px 40px;
-  }
-  .nome { font-family: var(--f-titulo); font-stretch: 115%; font-weight: 760; font-size: 1.3rem; color: #fff; margin-bottom: 10px; }
-  .sobre p:last-child { max-width: 42ch; }
-  .titulo { color: var(--c-menta); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 14px; }
-  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-  a { color: #fff; text-decoration: none; }
-  a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .base { border-top: 1px solid #1d4352; padding-block: 20px 28px; font-size: var(--t-pequeno); }
-  @media (max-width: 760px) { .grade { grid-template-columns: 1fr; gap: 28px; } }
+  .closing .nav__logo img { display: block; height: 40px; width: auto; }
+  .footer__col a[href^="mailto:"] { overflow-wrap: anywhere; }
 </style>

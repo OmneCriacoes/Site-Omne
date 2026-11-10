@@ -1,87 +1,52 @@
 ---
 import { listaCategorias, site } from '../lib/site';
+import { limparNumero } from '../lib/whatsapp';
 ---
 
-<form class="orcamento" data-orcamento data-whatsapp={site.whatsapp} novalidate>
-  <div class="campo">
-    <label for="orc-nome">Seu nome <span aria-hidden="true">*</span></label>
-    <input id="orc-nome" name="nome" type="text" autocomplete="name" required />
+<!-- O formulário do kit (system.js confere os campos e mostra cada erro sob o seu campo). Com os campos certos, o
+     navegador abre o WhatsApp da Omne numa aba nova, com a mensagem montada no campo "text". Os campos visíveis não
+     têm name: só a mensagem vai para o wa.me. Sem JavaScript o WhatsApp abre mesmo assim, sem a mensagem. -->
+<form class="form" action={`https://wa.me/${limparNumero(site.whatsapp)}`} method="get" target="_blank" data-orcamento data-fix="Campos a conferir: {n}." novalidate>
+  <input type="hidden" name="text" value="" />
+  <div class="field">
+    <label for="orc-nome">Nome</label>
+    <input id="orc-nome" data-campo="nome" type="text" autocomplete="name" required aria-describedby="orc-nome-err" />
+    <p class="field__error" id="orc-nome-err" hidden>Escreva o seu nome.</p>
   </div>
-  <div class="campo">
+  <div class="field">
     <label for="orc-empresa">Empresa ou evento</label>
-    <input id="orc-empresa" name="empresa" type="text" autocomplete="organization" />
+    <input id="orc-empresa" data-campo="empresa" type="text" autocomplete="organization" />
   </div>
-  <div class="campo">
-    <label for="orc-servico">Serviço <span aria-hidden="true">*</span></label>
-    <select id="orc-servico" name="servico" required>
-      <option value="" disabled selected>Escolha uma opção</option>
-      {listaCategorias.map(([chave, rotulo]) => (
-        <option value={rotulo} data-chave={chave}>{rotulo}</option>
-      ))}
-      <option value="Outro / ainda não sei">Outro / ainda não sei</option>
+  <div class="field">
+    <label for="orc-servico">Serviço</label>
+    <select id="orc-servico" data-campo="servico" required aria-describedby="orc-servico-err">
+      <option value="">Escolha um serviço</option>
+      {listaCategorias.map(([, rotulo]) => <option value={rotulo}>{rotulo}</option>)}
+      <option value="Ainda não sei">Ainda não sei</option>
     </select>
+    <p class="field__error" id="orc-servico-err" hidden>Escolha o serviço, ou "Ainda não sei".</p>
   </div>
-  <div class="campo">
-    <label for="orc-cidade">Cidade do evento</label>
-    <input id="orc-cidade" name="cidade" type="text" autocomplete="address-level2" />
+  <div class="field">
+    <label for="orc-local">Cidade e data</label>
+    <input id="orc-local" data-campo="cidade" type="text" autocomplete="address-level2" />
   </div>
-  <div class="campo">
-    <label for="orc-data">Data prevista</label>
-    <input id="orc-data" name="data" type="date" />
+  <div class="field field--full">
+    <label for="orc-mensagem">O que você imagina</label>
+    <textarea id="orc-mensagem" data-campo="mensagem" rows="3" required aria-describedby="orc-mensagem-err"></textarea>
+    <p class="field__error" id="orc-mensagem-err" hidden>Conte em uma frase o que você quer fazer.</p>
   </div>
-  <div class="campo inteiro">
-    <label for="orc-mensagem">Conte sobre o projeto <span aria-hidden="true">*</span></label>
-    <textarea id="orc-mensagem" name="mensagem" rows="5" required placeholder="O que você imagina, medidas aproximadas, local e quantidade de peças."></textarea>
-  </div>
-  <div class="acoes inteiro">
-    <button class="botao" type="submit">Enviar pelo WhatsApp</button>
-    <p class="dica">Abrimos o WhatsApp com a sua mensagem pronta. É só tocar em enviar.</p>
-    <p class="aviso" data-aviso role="status" aria-live="polite"></p>
-  </div>
+  <div class="btn-row"><button class="btn btn--primary" type="submit">Pedir orçamento</button></div>
+  <p class="form__status" role="status" data-form-status></p>
+  <p class="t-small muted">O WhatsApp abre com a mensagem pronta. É só enviar.</p>
 </form>
 
 <script>
   import { conectarFormularioOrcamento } from '../lib/formulario-orcamento';
 
-  document.querySelectorAll<HTMLFormElement>('form[data-orcamento]').forEach((form) => {
-    conectarFormularioOrcamento(form, {
-      numeroWhatsApp: form.dataset.whatsapp ?? '',
-      abrirLink: (url) => {
-        const aba = window.open(url, '_blank');
-        if (aba) aba.opener = null;
-        else window.location.assign(url);
-      },
-    });
-  });
+  document.querySelectorAll<HTMLFormElement>('form[data-orcamento]').forEach(conectarFormularioOrcamento);
 </script>
 
 <style>
-  .orcamento {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 24px;
-  }
-  .inteiro { grid-column: 1 / -1; }
-  .campo { display: grid; gap: 8px; min-width: 0; }
-  label { font-weight: 600; font-size: 0.95rem; color: var(--c-tinta); }
-  label span { color: var(--c-menta-texto); }
-  input, select, textarea {
-    width: 100%;
-    font: inherit;
-    color: var(--c-tinta);
-    background: var(--c-superficie);
-    border: 1px solid #c9d7dc;
-    border-radius: var(--raio);
-    padding: 12px 14px;
-    min-height: 48px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  textarea { resize: vertical; min-height: 140px; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--c-marca); box-shadow: 0 0 0 3px rgb(24 222 186 / 0.35); }
-  [aria-invalid='true'] { border-color: var(--c-erro); }
-  .acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
-  .dica { font-size: var(--t-pequeno); color: var(--c-suave); }
-  .aviso { flex-basis: 100%; font-size: var(--t-pequeno); color: var(--c-tinta); font-weight: 500; }
-  .aviso:empty { display: none; }
-  @media (max-width: 640px) { .orcamento { grid-template-columns: 1fr; } }
+  .form { background: var(--g-alt); padding: var(--s-7); border-radius: var(--r-lg); }
+  @media (max-width: 639px) { .form { padding: var(--s-5); } }
 </style>

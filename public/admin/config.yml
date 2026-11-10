@@ -78,7 +78,10 @@ collections:
       - { name: titulo, label: Nome, widget: string }
       - { name: categoria, label: Categoria (não alterar), widget: hidden }
       - { name: chamada, label: Frase de apresentação, widget: text }
+      - { name: menu, label: Linha do menu (até 30 caracteres), widget: string, required: false, default: '' }
       - { name: itens, label: O que inclui, widget: list, field: { name: item, label: Item, widget: string } }
+      - { name: foto, label: Foto de um trabalho, widget: image, required: false }
+      - { name: fotoAlt, label: O que a foto mostra, widget: string, required: false, default: '' }
       - { name: ordem, label: Ordem, widget: number, value_type: int }
       - { name: body, label: Texto, widget: markdown, required: false }
 

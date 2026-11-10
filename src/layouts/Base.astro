@@ -1,67 +1,92 @@
 ---
-import '../styles/global.css';
 import Cabecalho from '../components/Cabecalho.astro';
 import Rodape from '../components/Rodape.astro';
-import BotaoWhatsApp from '../components/BotaoWhatsApp.astro';
 import { site } from '../lib/site';
 
 interface Props {
+  /** "Omne Criações: o que é para quem"; a página interna passa só a primeira parte. */
   titulo?: string;
   descricao?: string;
   imagem?: string;
+  /** Momentos sorteados para a página (moments.mjs pick): carregados antes da primeira pintura. */
+  momentos?: string[];
+  /** Palavra do menu da página atual (aria-current). */
+  atual?: string;
 }
 
-const { titulo, descricao = site.descricao, imagem } = Astro.props;
-const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : `${site.nome} | Cenografia, esculturas e espaços temáticos`;
+const { titulo, descricao = site.descricao, imagem = '/share.jpg', momentos = [], atual } = Astro.props;
+const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : `${site.nome}: cenografia para shoppings e marcas`;
 const canonica = new URL(Astro.url.pathname, Astro.site);
-const imagemSocial = imagem ? new URL(imagem, Astro.site).href : undefined;
+const imagemSocial = new URL(imagem, Astro.site).href;
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<!-- tipo: service · sorteio: hero photo (início) e split (páginas internas), nav-centre, close-type, footer-columns,
+     ritmo dark-band, botões solid, logo do cliente no lugar da marca · tipografia zilla (Zilla Slab / Rethink Sans) ·
+     cores do logo da Omne (start.mjs brand) · momentos photo-chapters e picture-develops -->
+<html lang="pt-BR" data-type="service" data-radius="soft" data-buttons="solid" data-motion>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
     <link rel="canonical" href={canonica} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="theme-color" content="#005273" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content={site.nome} />
     <meta property="og:title" content={tituloCompleto} />
     <meta property="og:description" content={descricao} />
     <meta property="og:url" content={canonica} />
-    {imagemSocial && <meta property="og:image" content={imagemSocial} />}
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <meta property="og:image" content={imagemSocial} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#f5f8f7" />
+    <meta name="site-kind" content="other" />
+    <meta name="page-type" content="service" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600&family=Rethink+Sans:wght@400..600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/system.css" />
+    <link rel="stylesheet" href="/assets/ui/cards.css" />
+    <link rel="stylesheet" href="/assets/motion/motion.css" />
+    <link rel="stylesheet" href="/assets/layout/layout.css" />
+    <style is:inline>
+      :root {
+        --p-bg: #f5f8f7; --p-surface: #e8efec; --p-ink: #14201e; --p-muted: #616a68;
+        --p-accent: #005273; --p-accent-ink: #f5f8f7; --p-action: #005273; --p-action-ink: #f5f8f7;
+        --p-inv-bg: #14201e; --p-inv-surface: #212d2a; --p-inv-ink: #f5f8f7; --p-inv-muted: #979e9d;
+        --p-inv-accent: #f5f8f7; --p-inv-accent-ink: #14201e; --p-inv-action: #f5f8f7; --p-inv-action-ink: #14201e;
+        --font-display: "Zilla Slab", Georgia, serif;
+        --font-text: "Rethink Sans", system-ui, sans-serif;
+        --display-weight: 400;
+        --display-tracking: -0.018em;
+        --display-tracking-xl: -0.024em;
+        --ly-scale: 1.02;
+      }
+    </style>
+    <slot name="head" />
+    <script is:inline>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+    {momentos.length > 0 && (
+      <>
+        <script is:inline>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+        <link rel="modulepreload" href="/assets/moments/moments.js" />
+        <link rel="modulepreload" href="/assets/moments/lib.js" />
+        {momentos.map((id) => <link rel="modulepreload" href={`/assets/moments/${id}/moment.js`} />)}
+      </>
+    )}
   </head>
   <body>
-    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
-    <Cabecalho />
-    <main id="conteudo">
+    <Cabecalho atual={atual} />
+    <main id="top">
       <slot />
     </main>
     <Rodape />
-    <BotaoWhatsApp />
-    <script>
-      import { revelarMidias } from '../lib/skeleton';
-      revelarMidias(document);
-    </script>
+    <nav class="actionbar" aria-label="Ações rápidas">
+      <a class="btn btn--primary" href="/orcamento/">Pedir orçamento</a>
+    </nav>
+    <script is:inline type="module" src="/assets/system.js"></script>
+    <script is:inline type="module" src="/assets/motion/motion.js"></script>
+    <script is:inline type="module" src="/assets/layout/layout.js"></script>
   </body>
 </html>
-
-<style>
-  .pular {
-    position: absolute;
-    left: 12px;
-    top: -60px;
-    z-index: 100;
-    background: var(--c-tinta);
-    color: #fff;
-    padding: 10px 14px;
-    border-radius: var(--raio);
-  }
-  .pular:focus { top: 12px; }
-</style>

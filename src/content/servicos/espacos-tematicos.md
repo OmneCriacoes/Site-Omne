@@ -2,6 +2,9 @@
 titulo: Espaços temáticos
 categoria: espacos-tematicos
 chamada: Ambientes completos para shoppings e marcas, como Natal, Páscoa e áreas infantis.
+menu: "Natal e áreas de brincar"
+foto: ../projetos/vila-da-crianca/02.jpg
+fotoAlt: "Cidade cenográfica com casinhas, pneus coloridos e moinho na Vila da Criança"
 itens:
   - Decorações de Natal e datas comemorativas
   - Espaços de brincar e cidades cenográficas
