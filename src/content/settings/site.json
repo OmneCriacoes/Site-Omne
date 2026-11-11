@@ -4,8 +4,8 @@
   "description": "Esculturas, murais, mesas e espaços temáticos projetados, fabricados em São Paulo e montados no local pela mesma equipe.",
   "theme": "galeria",
   "showThemePreview": false,
-  "heroTitle": "Cenografia para shoppings, marcas e eventos",
-  "heroSubtitle": "Esculturas em fibra de vidro, murais pintados à mão e espaços temáticos inteiros saem da oficina em São Paulo e são montados no local.",
+  "heroTitle": "Cenografia para shoppings e marcas",
+  "heroSubtitle": "Esculturas em fibra de vidro, murais pintados à mão e espaços temáticos saem da oficina em São Paulo e são montados no local, como o Natal de 4 shoppings.",
   "heroImage": {
     "src": "/uploads/projetos/natal-em-shoppings/03.webp",
     "alt": "Papai Noel gigante lendo o livro Fábulas de Natal, com quebra-nozes e Mamãe Noel, num shopping"
@@ -21,15 +21,15 @@
   },
   "process": [
     {
-      "title": "Projeto",
+      "title": "Projeto da cenografia",
       "text": "O desenho e o projeto em 3D mostram a peça antes de ela existir, com materiais, medidas e prazo no orçamento."
     },
     {
-      "title": "Produção",
+      "title": "Produção das esculturas",
       "text": "Modelagem, escultura, pintura e acabamento acontecem na oficina, em isopor, resina ou fibra de vidro."
     },
     {
-      "title": "Montagem",
+      "title": "Montagem da cenografia",
       "text": "A mesma equipe transporta a peça e a monta no local, pronta para a inauguração."
     }
   ]

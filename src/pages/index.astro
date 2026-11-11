@@ -23,19 +23,21 @@ const contact = settings.contact;
     secondary={{ href: '/portfolio', label: 'Ver o portfólio' }}
   />
 
-  <section class="section" id="servicos" aria-labelledby="servicos-h">
+  <section class="section" id="servicos" style="--hm: 2" aria-labelledby="servicos-h">
     <div class="wrap">
-      <div class="section-head">
-        <h2 id="servicos-h">Esculturas, murais, mesas e espaços</h2>
-        <p>Cinco serviços que saem da mesma oficina. Passe pelo nome para ver uma peça de cada um.</p>
-      </div>
       <div class="grid grid--top fill" data-peek>
-        <ul class="rows span-5">
-          {services.map((s) => (
-            <li data-peek-to={s.slug} tabindex="0"><a class="rows__name" href={`/servicos/${s.slug}`}>{s.title}</a><p>{s.summary}</p></li>
-          ))}
-        </ul>
-        <div class="frame frame--photo frame--fill span-6 start-7">
+        <div class="span-5">
+          <div class="section-head">
+            <h2 id="servicos-h">Esculturas, murais, mesas e espaços</h2>
+            <p>Passe pelo nome para ver uma peça de cada serviço.</p>
+          </div>
+          <ul class="rows">
+            {services.map((s) => (
+              <li data-peek-to={s.slug} tabindex="0"><a class="rows__name" href={`/servicos/${s.slug}`}>{s.title}</a><p>{s.highlights[0] ?? s.summary}</p></li>
+            ))}
+          </ul>
+        </div>
+        <div class="frame frame--photo frame--fill span-6 start-7 servicos__foto">
           {services.map((s, i) => (
             <img class="frame__img" data-peek-for={s.slug} src={s.cover.src} alt={s.cover.alt} hidden={i > 0} data-source="client" data-subject={s.title} />
           ))}
@@ -69,3 +71,8 @@ const contact = settings.contact;
     contact={contact}
   />
 </BaseLayout>
+
+<style>
+  /* sem a altura da coluna ao lado (empilhado), a foto do peek-list toma a sua proporção */
+  @media (max-width: 1023px) { .servicos__foto { --ratio: 75%; height: auto; margin-top: var(--s-7); } }
+</style>
