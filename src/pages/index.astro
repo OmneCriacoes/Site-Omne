@@ -9,6 +9,7 @@ import fotoServicos from '../content/projetos/nike/02.jpg';
 import fotoArvorar from '../content/projetos/espaco-arvorar-duratex/02.jpg';
 import fotoVila from '../content/projetos/vila-da-crianca/02.jpg';
 import fotoBrinquedao from '../content/projetos/brinquedao-magazine-luiza/06.jpg';
+import fotoNatal from '../content/projetos/natal-em-shoppings/03.jpg';
 import fotoOficina from '../content/projetos/cow-parade/13.jpg';
 
 const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
@@ -50,7 +51,7 @@ const capitulos = [
           <p class="servicos__link"><a class="link" href="/servicos/">Ver os serviços em detalhe</a></p>
         </div>
         <div class="frame frame--photo span-6 start-7" style="--ratio: 100%">
-          <Image class="frame__img" src={fotoServicos} widths={[900, 1280]} sizes="(min-width: 1024px) 900px, 100vw" alt="Bustos recortados em painéis e pedestais com tênis sob cúpulas na ativação Nike" loading="lazy" data-source="client" data-subject="ativação de marca Nike" />
+          <Image class="frame__img" src={fotoServicos} widths={[900, 1280]} sizes="900px" alt="Bustos recortados em painéis e pedestais com tênis sob cúpulas na ativação Nike" loading="lazy" data-source="client" data-subject="ativação de marca Nike" />
         </div>
       </div>
     </div>
@@ -103,9 +104,11 @@ const capitulos = [
             <h2 id="orcamento-h">Orçamento de cenografia pelo WhatsApp</h2>
             <p>Preencha os campos e o WhatsApp abre com a mensagem pronta para a Omne. {site.atendimento}, a partir de {site.cidade}.</p>
           </div>
-          <p class="orcamento__email">Prefere e-mail? <a class="link" href={`mailto:${site.email}`}>{site.email}</a></p>
+          <div class="frame frame--photo orcamento__foto" style="--ratio: 63%">
+            <Image class="frame__img" src={fotoNatal} widths={[700, 1393]} sizes="700px" alt="Papai Noel gigante lendo o livro Fábulas de Natal, com quebra-nozes e Mamãe Noel, num shopping" loading="lazy" data-source="client" data-subject="decoração de Natal em shopping" />
+          </div>
         </div>
-        <div class="span-6 start-7">
+        <div class="card span-6 start-7 orcamento__card">
           <FormularioOrcamento />
         </div>
       </div>
@@ -115,9 +118,13 @@ const capitulos = [
 
 <style>
   .servicos__link { margin-top: var(--s-6); }
-  .orcamento__email { margin-top: var(--s-6); }
+  .orcamento__foto { margin-top: var(--s-7); }
+  .orcamento__card { align-self: start; }
   /* picture-develops: a foto da seção, na coluna direita, da altura do texto ao lado */
   .develop { margin: 0; border-radius: var(--r-lg); overflow: hidden; height: min(560px, var(--ly-fit)); }
   .develop :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
   @media (max-width: 1023px) { .develop { height: auto; aspect-ratio: 4 / 3; margin-top: var(--s-7); } }
+  /* no telefone a seção tem duas telas: a foto mais alta enche a segunda, e o orçamento ganha uma foto maior */
+  @media (max-width: 639px) { .develop { aspect-ratio: 3 / 4; } .orcamento__foto { --ratio: 100% !important; } }
+  @media (max-width: 359px) { .develop { aspect-ratio: 4 / 3; } }
 </style>
