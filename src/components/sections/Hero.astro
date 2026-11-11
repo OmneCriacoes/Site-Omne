@@ -1,87 +1,31 @@
 ---
-import type { SiteSettings } from '@domain/entities';
-import Button from '@components/ui/Button.astro';
-import Media from '@components/ui/Media.astro';
+import type { Image } from '@domain/entities';
 
+/** O hero sorteado (split do kit): as palavras à esquerda, a foto do trabalho à direita, uma tela só. */
 interface Props {
-  settings: SiteSettings;
+  title: string;
+  lead: string;
+  image: Image;
+  subject: string;
+  position?: string;
+  secondary?: { href: string; label: string };
 }
 
-const { settings } = Astro.props;
+const { title, lead, image, subject, position = '50% 50%', secondary } = Astro.props;
 ---
 
-<section class="hero">
-  <Media image={settings.heroImage} ratio="auto" eager class="hero-media" />
-  <div class="container content">
-    <p class="eyebrow" data-sk="text">{settings.tagline}</p>
-    <h1 class="title" data-sk="text">{settings.heroTitle}</h1>
-    <p class="subtitle" data-sk="text">{settings.heroSubtitle}</p>
-    <div class="actions">
-      <Button href="/contato">Solicitar orçamento</Button>
-      <Button href="/portfolio" variant="outline">Ver portfólio</Button>
+<section class="hero hero--split" data-enter aria-labelledby="hero-h">
+  <div class="wrap"><div class="hero-text grid hero__grid">
+    <div class="hero__text span-5">
+      <h1 id="hero-h">{title}</h1>
+      <p class="hero__lead">{lead}</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="/contato">Pedir orçamento</a>
+        {secondary && <a class="btn btn--secondary" href={secondary.href}>{secondary.label}</a>}
+      </div>
     </div>
-  </div>
+    <div class="hero__media span-6 start-7">
+      <img src={image.src} alt={image.alt} style={`--ly-pos: ${position}`} fetchpriority="high" data-source="client" data-subject={subject} />
+    </div>
+  </div></div>
 </section>
-
-<style>
-  .hero {
-    position: relative;
-    display: grid;
-    align-items: end;
-    min-height: min(88vh, 52rem);
-    color: var(--color-hero-ink);
-    isolation: isolate;
-  }
-
-  .hero :global(.hero-media) {
-    position: absolute;
-    inset: 0;
-    /* Abaixo do ::before, que vem antes no DOM e por isso ficaria escondido atrás da foto. */
-    z-index: -2;
-    border-radius: 0;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: var(--color-hero-overlay);
-    pointer-events: none;
-  }
-
-  :global(.is-loading) .hero::before {
-    display: none;
-  }
-
-  .content {
-    display: grid;
-    gap: var(--space-5);
-    padding-block: var(--space-9) var(--space-8);
-  }
-
-  .eyebrow {
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: var(--eyebrow-tracking);
-    text-transform: uppercase;
-  }
-
-  .title {
-    max-width: 16ch;
-    font-size: var(--text-4xl);
-  }
-
-  .subtitle {
-    max-width: 38rem;
-    font-size: var(--text-lg);
-    opacity: 0.9;
-  }
-
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-top: var(--space-3);
-  }
-</style>

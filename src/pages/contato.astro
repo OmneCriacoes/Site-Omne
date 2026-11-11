@@ -1,91 +1,29 @@
 ---
 import { container } from '@core/container';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import QuoteForm from '@components/sections/QuoteForm.astro';
-import Icon from '@components/ui/Icon.astro';
-import SectionHeading from '@components/ui/SectionHeading.astro';
+import Hero from '@components/sections/Hero.astro';
+import QuoteSection from '@components/sections/QuoteSection.astro';
+import Statement from '@components/sections/Statement.astro';
 
-const [settings, services, contact] = await Promise.all([
-  container.site.getSettings(),
-  container.catalog.list(),
-  container.contact(),
-]);
-const info = settings.contact;
+const [settings, services] = await Promise.all([container.site.getSettings(), container.catalog.list()]);
 ---
 
-<BaseLayout title="Contato" description="Solicite um orçamento de cenografia, esculturas, murais, mesas ou espaços temáticos.">
-  <section class="container page">
-    <div class="side">
-      <SectionHeading
-        as="h1"
-        eyebrow="Contato"
-        title="Vamos conversar sobre o seu projeto"
-        intro="Preencha o formulário e escolha como prefere enviar. Se preferir, fale direto com a gente."
-      />
-      <ul class="channels">
-        <li>
-          <a href={contact.whatsappLink()} target="_blank" rel="noopener" data-sk="text">
-            <Icon name="chat" /> WhatsApp {info.phoneDisplay}
-          </a>
-        </li>
-        <li>
-          <a href={`mailto:${info.email}`} data-sk="text"><Icon name="mail" /> {info.email}</a>
-        </li>
-        <li data-sk="text"><Icon name="pin" /> {info.city}</li>
-      </ul>
-    </div>
-    <div class="panel">
-      <QuoteForm services={services} contact={info} />
-    </div>
-  </section>
+<BaseLayout title="Orçamento de cenografia pelo WhatsApp" description="Peça o orçamento de esculturas, murais, mesas ou espaços temáticos: o WhatsApp da Omne Criações abre com a sua mensagem pronta." moments={['word-highlight']}>
+  <Hero
+    title="Orçamento de cenografia pelo WhatsApp"
+    lead="Conte a ideia, o local e a data, para 1 peça ou o espaço inteiro. A conversa segue pelo WhatsApp com a equipe que vai desenhar, fabricar e montar a peça."
+    image={{ src: '/uploads/projetos/brinquedao-magazine-luiza/01.webp', alt: 'Castelo azul de brincar com escorregadores verdes, feito para o Brinquedão Magazine Luiza' }}
+    subject="área de brincar do Brinquedão Magazine Luiza"
+    secondary={{ href: '/portfolio', label: 'Ver o portfólio' }}
+  />
+
+  <Statement id="como" label="O pedido">Um nome, o serviço e uma frase sobre a ideia bastam para começar; o <strong>local e a data</strong> ajudam a oficina a dar o prazo.</Statement>
+
+  <QuoteSection
+    title="Pedido de orçamento"
+    image={{ src: '/uploads/projetos/expresso-da-8/11.webp', alt: 'Fachada cenográfica da loja Baú do Bruxo, com coruja e lustres de papel, no Expresso da 8' }}
+    subject="espaço temático Expresso da 8"
+    services={services}
+    contact={settings.contact}
+  />
 </BaseLayout>
-
-<script>
-  const slug = new URLSearchParams(location.search).get('servico');
-  const select = document.querySelector<HTMLSelectElement>('#service');
-  const match = slug && select ? [...select.options].find((o) => o.dataset.slug === slug) : undefined;
-  if (match) match.selected = true;
-</script>
-
-<style>
-  .page {
-    display: grid;
-    grid-template-columns: 0.9fr 1.1fr;
-    gap: var(--space-8);
-    padding-block: var(--space-9);
-  }
-
-  .channels {
-    display: grid;
-    gap: var(--space-4);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .channels li,
-  .channels a {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    text-decoration: none;
-    word-break: break-word;
-  }
-
-  .panel {
-    padding: var(--space-7);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-lg);
-    background: var(--color-surface);
-  }
-
-  @media (max-width: 860px) {
-    .page {
-      grid-template-columns: 1fr;
-    }
-
-    .panel {
-      padding: var(--space-5);
-    }
-  }
-</style>

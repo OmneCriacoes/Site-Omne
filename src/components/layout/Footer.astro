@@ -1,129 +1,73 @@
 ---
 import type { SiteSettings } from '@domain/entities';
-import { mainNavigation } from '@core/navigation';
-import Icon from '@components/ui/Icon.astro';
+import { container } from '@core/container';
 
 interface Props {
   settings: SiteSettings;
-  whatsappLink: string;
 }
 
-const { settings, whatsappLink } = Astro.props;
+const { settings } = Astro.props;
 const { contact } = settings;
 const year = new Date().getFullYear();
+const [services, projects, whatsapp] = await Promise.all([
+  container.catalog.list(),
+  container.portfolio.featured(3),
+  container.contact().then((c) => c.whatsappLink()),
+]);
 ---
 
-<footer class="footer">
-  <div class="container grid">
-    <div class="about">
-      <p class="name" data-sk="text">{settings.name}</p>
-      <p class="tagline" data-sk="text">{settings.description}</p>
+<footer class="footer closing" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head">
+        <h2 id="close-h">A sua peça começa num pedido de orçamento</h2>
+        <p>Diga o que imagina, o local e a data. O WhatsApp abre com a mensagem pronta para a oficina.</p>
+      </div>
+      <a class="btn btn--primary btn--xl" href="/contato">Pedir orçamento<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8" /><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" /></svg></a>
     </div>
-
-    <nav aria-label="Rodapé">
-      <p class="label" data-sk="text">Navegação</p>
-      <ul>
-        {
-          mainNavigation.map((item) => (
-            <li>
-              <a href={item.href} data-sk="text">
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    <div>
-      <p class="label" data-sk="text">Contato</p>
-      <ul>
-        <li>
-          <a href={whatsappLink} target="_blank" rel="noopener" data-sk="text">
-            <Icon name="chat" size={16} /> WhatsApp {contact.phoneDisplay}
-          </a>
-        </li>
-        <li>
-          <a href={`mailto:${contact.email}`} data-sk="text"><Icon name="mail" size={16} /> {contact.email}</a>
-        </li>
-        <li data-sk="text"><Icon name="pin" size={16} /> {contact.city}</li>
-      </ul>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="/"><img src="/uploads/logo-omne.svg" alt={settings.name} width="94" height="40" /></a>
+          <p class="footer__lede">{settings.tagline}, feitas em {contact.city}.</p>
+        </div>
+        <div class="span-2 footer__col">
+          <h3>Serviços</h3>
+          <ul>{services.map((s) => <li><a href={`/servicos/${s.slug}`}>{s.title}</a></li>)}</ul>
+        </div>
+        <div class="span-2 footer__col">
+          <h3>Portfólio</h3>
+          <ul>
+            <li><a href="/portfolio">Todos os projetos</a></li>
+            {projects.map((p) => <li><a href={`/portfolio/${p.slug}`}>{p.title}</a></li>)}
+          </ul>
+        </div>
+        <div class="span-2 footer__col">
+          <h3>Sobre</h3>
+          <ul>
+            <li><a href="/sobre">A oficina</a></li>
+            <li><a href="/sobre#clientes">Clientes</a></li>
+          </ul>
+        </div>
+        <div class="span-2 footer__col">
+          <h3>Contato</h3>
+          <ul>
+            <li><a href={whatsapp}>WhatsApp</a></li>
+            <li><a class="footer__email" href={`mailto:${contact.email}`}>{contact.email}</a></li>
+            <li>{contact.city}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; {year} {settings.name}</span>
+        <div class="socials"></div>
+        <span class="t-small">Marcas e logos de clientes pertencem aos seus donos.</span>
+      </div>
     </div>
-  </div>
-
-  <div class="container legal">
-    <p data-sk="text">{year} {settings.name}. Todos os direitos reservados.</p>
   </div>
 </footer>
 
 <style>
-  .footer {
-    margin-top: var(--space-9);
-    padding-top: var(--space-8);
-    border-top: 1px solid var(--color-line);
-    background: var(--color-surface-alt);
-    font-size: var(--text-sm);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1.4fr;
-    gap: var(--space-7);
-  }
-
-  .name {
-    margin-bottom: var(--space-3);
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-  }
-
-  .tagline {
-    max-width: 28rem;
-    color: var(--color-ink-soft);
-  }
-
-  .label {
-    margin-bottom: var(--space-3);
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: var(--eyebrow-tracking);
-    text-transform: uppercase;
-  }
-
-  ul {
-    display: grid;
-    gap: var(--space-2);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  li,
-  a {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    color: var(--color-ink-soft);
-    text-decoration: none;
-    word-break: break-word;
-  }
-
-  a:hover {
-    color: var(--color-ink);
-  }
-
-  .legal {
-    margin-top: var(--space-7);
-    padding-block: var(--space-5);
-    border-top: 1px solid var(--color-line);
-    color: var(--color-ink-soft);
-    font-size: var(--text-xs);
-  }
-
-  @media (max-width: 760px) {
-    .grid {
-      grid-template-columns: 1fr;
-      gap: var(--space-6);
-    }
-  }
+  .closing .nav__logo img { display: block; height: 40px; width: auto; }
+  .footer__email { overflow-wrap: anywhere; }
 </style>

@@ -1,25 +1,14 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import Button from '@components/ui/Button.astro';
-import SectionHeading from '@components/ui/SectionHeading.astro';
+import Hero from '@components/sections/Hero.astro';
 ---
 
-<BaseLayout title="Página não encontrada">
-  <section class="container page">
-    <SectionHeading
-      as="h1"
-      eyebrow="Erro 404"
-      title="Esta página saiu de cena"
-      intro="O endereço pode ter mudado. Que tal ver nossos projetos?"
-      align="center"
-    >
-      <Button href="/portfolio">Ver portfólio</Button>
-    </SectionHeading>
-  </section>
+<BaseLayout title="Página não encontrada" description="Este endereço não existe no site da Omne Criações.">
+  <Hero
+    title="Página não encontrada"
+    lead="Este endereço não existe no site da Omne Criações. O portfólio, os serviços e o pedido de orçamento continuam a um clique."
+    image={{ src: '/uploads/projetos/expresso-da-8/02.webp', alt: 'Placa Beco Mágico em madeira com moldura dourada, sob um brasão em relevo, no Expresso da 8' }}
+    subject="placa cenográfica do Expresso da 8"
+    secondary={{ href: '/portfolio', label: 'Ver o portfólio' }}
+  />
 </BaseLayout>
-
-<style>
-  .page {
-    padding-block: var(--space-9);
-  }
-</style>

@@ -5,7 +5,7 @@ highlights:
   - Decorações de Natal e datas comemorativas
   - Espaços de brincar e cidades cenográficas
   - Lounges e ativações de marca
-cover: { src: /uploads/projetos/expresso-da-8/01.webp, alt: "Espaços temáticos feitos pela Omne" }
+cover: { src: /uploads/projetos/vila-da-crianca/02.webp, alt: "Cidade cenográfica com casinhas, pneus coloridos e moinho na Vila da Criança" }
 order: 4
 ---
 Projetamos o espaço inteiro, com cenários, personagens e pontos de foto.

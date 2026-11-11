@@ -1,6 +1,6 @@
 ---
 import type { ContactInfo, Service } from '@domain/entities';
-import Button from '@components/ui/Button.astro';
+import { ContactService } from '@application/ContactService';
 
 interface Props {
   services: readonly Service[];
@@ -9,130 +9,51 @@ interface Props {
 }
 
 const { services, contact, selectedService } = Astro.props;
+const phone = ContactService.normalizePhone(contact.whatsapp);
 ---
 
-<form class="form" data-quote-form data-whatsapp={contact.whatsapp} data-email={contact.email}>
-  <div class="field field--full">
-    <label for="name" data-sk="text">Seu nome</label>
-    <input id="name" name="name" autocomplete="name" required data-sk="block" />
-  </div>
-
+<!-- O formulário do kit: o system.js confere os campos e mostra cada erro sob o seu campo. Com tudo certo, o navegador
+     abre o WhatsApp da Omne numa aba nova; o QuoteForm só escreve a mensagem no campo "text" antes do envio. Os campos
+     visíveis não têm name, então só a mensagem vai para o wa.me. Sem JavaScript o WhatsApp abre sem a mensagem. -->
+<form class="form" action={`https://wa.me/${phone}`} method="get" target="_blank" data-quote-form data-whatsapp={contact.whatsapp} data-email={contact.email} data-fix="Campos a conferir: {n}." novalidate>
+  <input type="hidden" name="text" value="" />
   <div class="field">
-    <label for="service" data-sk="text">Serviço</label>
-    <select id="service" name="service" required data-sk="block">
-      <option value="">Selecione</option>
-      {
-        services.map((service) => (
-          <option value={service.title} data-slug={service.slug} selected={service.slug === selectedService}>
-            {service.title}
-          </option>
-        ))
-      }
-      <option value="Outro">Outro</option>
+    <label for="q-name">Nome</label>
+    <input id="q-name" data-field="name" type="text" autocomplete="name" required aria-describedby="q-name-err" />
+    <p class="field__error" id="q-name-err" hidden>Escreva o seu nome.</p>
+  </div>
+  <div class="field">
+    <label for="q-service">Serviço</label>
+    <select id="q-service" data-field="service" required aria-describedby="q-service-err">
+      <option value="">Escolha um serviço</option>
+      {services.map((s) => <option value={s.title} selected={s.slug === selectedService}>{s.title}</option>)}
+      <option value="Ainda não sei">Ainda não sei</option>
     </select>
+    <p class="field__error" id="q-service-err" hidden>Escolha o serviço, ou "Ainda não sei".</p>
   </div>
-
   <div class="field">
-    <label for="eventDate" data-sk="text">Data do evento ou entrega</label>
-    <input id="eventDate" name="eventDate" type="date" data-sk="block" />
+    <label for="q-location">Local e cidade</label>
+    <input id="q-location" data-field="location" type="text" autocomplete="address-level2" />
   </div>
-
   <div class="field">
-    <label for="location" data-sk="text">Cidade e local</label>
-    <input id="location" name="location" placeholder="Ex.: Praça central, Bauru" data-sk="block" />
+    <label for="q-date">Data do evento</label>
+    <input id="q-date" data-field="eventDate" type="text" autocomplete="off" />
   </div>
-
-  <div class="field">
-    <label for="budget" data-sk="text">Orçamento estimado</label>
-    <select id="budget" name="budget" data-sk="block">
-      <option value="">Prefiro não informar</option>
-      <option>Até R$ 5 mil</option>
-      <option>R$ 5 mil a R$ 20 mil</option>
-      <option>R$ 20 mil a R$ 50 mil</option>
-      <option>Acima de R$ 50 mil</option>
-    </select>
-  </div>
-
   <div class="field field--full">
-    <label for="message" data-sk="text">Conte sobre o projeto</label>
-    <textarea id="message" name="message" rows="5" placeholder="Tema, tamanho do espaço, referências..." data-sk="block"
-    ></textarea>
+    <label for="q-message">O que você imagina</label>
+    <textarea id="q-message" data-field="message" rows="3" required aria-describedby="q-message-err"></textarea>
+    <p class="field__error" id="q-message-err" hidden>Conte em uma frase o que você quer fazer.</p>
   </div>
-
-  <div class="actions field--full">
-    <Button type="submit" name="channel" value="whatsapp">Enviar pelo WhatsApp</Button>
-    <Button type="submit" name="channel" value="email" variant="outline">Enviar por e-mail</Button>
-  </div>
-  <p class="note field--full" data-sk="text">
-    Ao enviar, abrimos o WhatsApp ou o seu e-mail com a mensagem pronta. Nenhum dado fica salvo no site.
-  </p>
+  <div class="btn-row"><button class="btn btn--primary" type="submit">Pedir orçamento</button></div>
+  <p class="form__status" role="status" data-form-status></p>
+  <p class="t-small muted">O WhatsApp abre com a mensagem pronta. É só enviar.</p>
 </form>
 
 <script>
   import { ContactService } from '@application/ContactService';
   import { QuoteForm } from '@scripts/quote-form';
 
-  const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
-  if (form) {
-    const contact = new ContactService(form.dataset.whatsapp ?? '', form.dataset.email ?? '');
-    new QuoteForm(form, contact, (url) => window.open(url, '_blank', 'noopener')).start();
-  }
+  document.querySelectorAll<HTMLFormElement>('[data-quote-form]').forEach((form) => {
+    new QuoteForm(form, new ContactService(form.dataset.whatsapp ?? '', form.dataset.email ?? '')).start();
+  });
 </script>
-
-<style>
-  .form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-5);
-  }
-
-  .field {
-    display: grid;
-    gap: var(--space-2);
-  }
-
-  .field--full {
-    grid-column: 1 / -1;
-  }
-
-  label {
-    justify-self: start;
-    font-size: var(--text-sm);
-    font-weight: 600;
-  }
-
-  input,
-  select,
-  textarea {
-    width: 100%;
-    min-height: 3rem;
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-  }
-
-  input:focus,
-  select:focus,
-  textarea:focus {
-    border-color: var(--color-accent);
-    outline: none;
-  }
-
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-  }
-
-  .note {
-    color: var(--color-ink-soft);
-    font-size: var(--text-xs);
-  }
-
-  @media (max-width: 640px) {
-    .form {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>

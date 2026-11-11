@@ -1,24 +1,35 @@
 ---
-import type { Project, Service } from '@domain/entities';
+import type { Project } from '@domain/entities';
 import ProjectCard from '@components/ui/ProjectCard.astro';
 
+/**
+ * Uma seção de projetos em linhas sempre cheias: até três numa linha só (uma tela), de quatro a seis em duas
+ * linhas (duas telas, uma por linha). Mais de seis ficam para a página do portfólio.
+ */
 interface Props {
+  id: string;
+  title: string;
+  text?: string;
   projects: readonly Project[];
-  services: readonly Service[];
+  link?: { href: string; label: string };
 }
 
-const { projects, services } = Astro.props;
-const serviceTitles = new Map(services.map((service) => [service.slug, service.title]));
+const { id, title, text, projects, link } = Astro.props;
+const list = projects.slice(0, 6);
+const rows = list.length <= 3 ? [list] : list.length === 4 ? [list.slice(0, 2), list.slice(2)] : [list.slice(0, 3), list.slice(3)];
+const spanOf = (row: readonly Project[]) => (row.length === 1 ? 'span-6' : row.length === 2 ? 'span-6' : 'span-4');
+const ratioOf = (row: readonly Project[]) => '4 / 3';
 ---
 
-<div class="grid" data-project-grid>
-  {projects.map((project) => <ProjectCard project={project} serviceTitles={serviceTitles} />)}
-</div>
-
-<style>
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-    gap: var(--space-7) var(--space-6);
-  }
-</style>
+<section class:list={['section', { g2: rows.length > 1 }]} id={id} aria-labelledby={`${id}-h`}>
+  <div class="wrap">
+    <div class="group">
+      <div class="section-head section-head--row">
+        <div><h2 id={`${id}-h`}>{title}</h2>{text && <p>{text}</p>}</div>
+        {link && <a class="link" href={link.href}>{link.label}</a>}
+      </div>
+      <div class="grid">{rows[0].map((p) => <ProjectCard project={p} span={spanOf(rows[0])} ratio={ratioOf(rows[0])} />)}</div>
+    </div>
+    {rows[1] && <div class="grid">{rows[1].map((p) => <ProjectCard project={p} span={spanOf(rows[1])} ratio={ratioOf(rows[1])} />)}</div>}
+  </div>
+</section>

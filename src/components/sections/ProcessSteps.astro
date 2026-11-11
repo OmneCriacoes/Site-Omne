@@ -1,0 +1,35 @@
+---
+import type { SiteSettings } from '@domain/entities';
+
+/** As etapas de um projeto no momento pinned-chapters: a seção segura na tela e a foto muda a cada etapa. */
+interface Props {
+  steps: SiteSettings['process'];
+}
+
+const { steps } = Astro.props;
+// cada etapa com a foto do que ela entrega: o projeto em 3D, a peça na oficina, o espaço montado
+const photos = [
+  { src: '/uploads/projetos/lounge-havaianas/01.webp', alt: 'Projeto em 3D do lounge Havaianas, com sofás em forma de nuvem e flores suspensas' },
+  { src: '/uploads/projetos/cow-parade/13.webp', alt: 'Vaca de fibra de vidro dirigindo um carro laranja, pronta na oficina para a Cow Parade' },
+  { src: '/uploads/projetos/brinquedao-magazine-luiza/06.webp', alt: 'Teatrinho com parede curva de ripas de madeira, montado no Brinquedão Magazine Luiza' },
+];
+const shown = steps.slice(0, photos.length).map((step, i) => ({ ...step, photo: photos[i] }));
+---
+
+<section class="section" id="processo" style="--h: 2" data-moment="pinned-chapters" aria-labelledby="processo-h">
+  <div class="wrap mo-pc__grid">
+    <div class="mo-pc__text">
+      <h2 id="processo-h">Projeto, produção e montagem</h2>
+      <ol class="mo-pc__steps">
+        {shown.map((step) => (
+          <li class="mo-pc__step">
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+            <figure class="mo-pc__visual"><img src={step.photo.src} alt={step.photo.alt} data-source="client" data-subject={step.title} /></figure>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <div class="mo-pc__visuals frame"></div>
+  </div>
+</section>

@@ -3,10 +3,9 @@ import type { GetStaticPaths } from 'astro';
 import { container } from '@core/container';
 import { SEGMENT_LABELS, type Project } from '@domain/entities';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import CtaBand from '@components/sections/CtaBand.astro';
+import Hero from '@components/sections/Hero.astro';
 import ProjectGrid from '@components/sections/ProjectGrid.astro';
-import Media from '@components/ui/Media.astro';
-import SectionHeading from '@components/ui/SectionHeading.astro';
+import Statement from '@components/sections/Statement.astro';
 
 export const getStaticPaths = (async () => {
   const projects = await container.portfolio.list();
@@ -18,136 +17,75 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const [services, related, contact] = await Promise.all([
-  container.catalog.list(),
-  container.portfolio.related(project, 3),
-  container.contact(),
-]);
-const serviceList = services.filter((service) => project.serviceSlugs.includes(service.slug));
+const [services, related] = await Promise.all([container.catalog.list(), container.portfolio.related(project, 3)]);
+const serviceList = services.filter((s) => project.serviceSlugs.includes(s.slug));
 const facts = [
   { label: 'Cliente', value: project.clientName },
   { label: 'Segmento', value: SEGMENT_LABELS[project.segment] },
   { label: 'Local', value: project.location },
   { label: 'Ano', value: project.year ? String(project.year) : '' },
-].filter((fact) => fact.value);
+].filter((f) => f.value);
+
+// a capa abre o hero; a segunda foto fica ao lado da ficha; as outras enchem linhas inteiras numa tela
+const photos = project.gallery.filter((img) => img.src !== project.cover.src);
+const [factsPhoto, ...rest] = photos;
+const count = [8, 6, 4, 3, 2].find((n) => rest.length >= n) ?? 0;
+const perRow = count === 6 ? 3 : Math.min(count, 4);
+const grid = rest.slice(0, count);
+const where = [project.clientName, project.location].filter(Boolean).join(', ');
+const serviceNoun = { esculturas: 'esculturas', murais: 'murais e cenografia', mesas: 'mesas cenográficas', 'espacos-tematicos': 'cenografia temática', projetos: 'projeto cenográfico' }[project.serviceSlugs[0]] ?? 'cenografia';
+const photoCount = project.gallery.length || 1;
 ---
 
-<BaseLayout title={project.title} description={project.summary} image={project.cover.src}>
-  <article>
-    <header class="container head">
-      <SectionHeading as="h1" eyebrow="Projeto" title={project.title} intro={project.summary} />
-      <dl class="facts">
-        {
-          facts.map((fact) => (
-            <div>
-              <dt data-sk="text">{fact.label}</dt>
-              <dd data-sk="text">{fact.value}</dd>
+<BaseLayout title={project.title} description={project.summary} image={project.cover.src} moments={['word-highlight']}>
+  <Hero
+    title={`${project.title}, ${serviceNoun}`}
+    lead={`${project.summary}${where ? ` ${where}.` : ''} ${photoCount} ${photoCount === 1 ? 'foto' : 'fotos'} do trabalho pronto nesta página.`}
+    image={project.cover}
+    subject={project.title}
+    secondary={{ href: '/portfolio', label: 'Ver o portfólio' }}
+  />
+
+  <Statement id="resumo" label={project.title}>O projeto {project.title} foi desenhado, feito e montado pela <strong>mesma equipe</strong>, do primeiro esboço à inauguração.</Statement>
+
+  {factsPhoto && (
+    <section class="section" id="ficha" aria-labelledby="ficha-h">
+      <div class="wrap">
+        <div class="grid grid--top fill">
+          <div class="span-5">
+            <div class="section-head">
+              <h2 id="ficha-h">Ficha do projeto</h2>
+              {project.bodyHtml && <div class="ficha__text" set:html={project.bodyHtml} />}
             </div>
-          ))
-        }
-        <div>
-          <dt data-sk="text">Serviços</dt>
-          <dd>
-            {
-              serviceList.map((service, index) => (
-                <>
-                  {index > 0 && ', '}
-                  <a href={`/servicos/${service.slug}`} data-sk="text">
-                    {service.title}
-                  </a>
-                </>
-              ))
-            }
-          </dd>
+            <ul class="rows">
+              {facts.map((f) => <li><span class="rows__name">{f.label}</span><span class="rows__value">{f.value}</span></li>)}
+              <li><span class="rows__name">Serviços</span><span class="rows__value">{serviceList.map((s, i) => <>{i > 0 && ', '}<a class="link" href={`/servicos/${s.slug}`}>{s.title}</a></>)}</span></li>
+            </ul>
+          </div>
+          <div class="frame frame--photo span-6 start-7" style="--ratio: 75%">
+            <img class="frame__img" src={factsPhoto.src} alt={factsPhoto.alt} loading="lazy" data-source="client" data-subject={project.title} />
+          </div>
         </div>
-      </dl>
-    </header>
+      </div>
+    </section>
+  )}
 
-    <div class="container">
-      <Media image={project.cover} ratio="16 / 9" eager />
-    </div>
-
-    <div class="container body">
-      <div class="prose" data-sk="text" set:html={project.bodyHtml} />
-    </div>
-
-    {
-      project.gallery.length > 0 && (
-        <div class="container gallery">
-          {project.gallery.map((image) => (
-            <Media image={image} ratio="4 / 3" />
+  {grid.length > 0 && (
+    <section class="section photo-grid" id="fotos" aria-labelledby="fotos-h">
+      <div class="wrap">
+        <div class="section-head"><h2 id="fotos-h">Fotos do {project.title}</h2></div>
+        <div class="wall" style={`--wall-cols: ${perRow}`} data-count={grid.length}>
+          {grid.map((img) => (
+            <figure class="wall__pic"><img src={img.src} alt={img.alt} loading="lazy" data-source="client" data-subject={project.title} /></figure>
           ))}
         </div>
-      )
-    }
-  </article>
+      </div>
+    </section>
+  )}
 
-  {
-    related.length > 0 && (
-      <section class="container related">
-        <SectionHeading eyebrow="Veja também" title="Projetos relacionados" />
-        <ProjectGrid projects={related} services={services} />
-      </section>
-    )
-  }
-
-  <CtaBand title="Quer algo parecido?" whatsappLink={contact.whatsappLink(`Olá! Vi o projeto "${project.title}" no site e gostaria de algo parecido.`)} />
+  <ProjectGrid id="outros" title="Outros projetos da oficina" projects={related} link={{ href: '/portfolio', label: 'Ver todos os projetos' }} />
 </BaseLayout>
 
 <style>
-  .head {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: var(--space-7);
-    align-items: end;
-    padding-block: var(--space-9) var(--space-7);
-  }
-
-  .head :global(.heading) {
-    margin-bottom: 0;
-  }
-
-  .facts {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
-    margin: 0;
-  }
-
-  dt {
-    color: var(--color-ink-soft);
-    font-size: var(--text-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  dd {
-    margin: var(--space-1) 0 0;
-  }
-
-  .body {
-    max-width: 46rem;
-    padding-block: var(--space-7);
-  }
-
-  .prose {
-    font-size: var(--text-lg);
-    color: var(--color-ink-soft);
-  }
-
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-    gap: var(--space-5);
-  }
-
-  .related {
-    padding-block: var(--space-9);
-  }
-
-  @media (max-width: 860px) {
-    .head {
-      grid-template-columns: 1fr;
-    }
-  }
+  .ficha__text :global(p) { max-width: 52ch; }
 </style>

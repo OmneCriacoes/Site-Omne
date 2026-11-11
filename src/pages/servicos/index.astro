@@ -1,32 +1,40 @@
 ---
 import { container } from '@core/container';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import CtaBand from '@components/sections/CtaBand.astro';
-import ServicesGrid from '@components/sections/ServicesGrid.astro';
-import SectionHeading from '@components/ui/SectionHeading.astro';
+import Hero from '@components/sections/Hero.astro';
+import Statement from '@components/sections/Statement.astro';
 
-const [services, contact] = await Promise.all([container.catalog.list(), container.contact()]);
+const services = await container.catalog.list();
+const rows = [services.slice(0, 3), services.slice(3)];
 ---
 
-<BaseLayout title="Serviços" description="Esculturas, murais, mesas, espaços temáticos e projetos cenográficos sob medida.">
-  <div class="container intro">
-    <SectionHeading
-      as="h1"
-      eyebrow="Serviços"
-      title="Tudo o que um espaço precisa para contar uma história"
-      intro="Contrate uma frente específica ou o projeto completo, com criação, produção e montagem."
-    />
-  </div>
-  <ServicesGrid services={services} showHeading={false} />
-  <CtaBand whatsappLink={contact.whatsappLink()} />
+<BaseLayout title="Serviços de cenografia e esculturas" description="Esculturas, murais, mesas, espaços temáticos e projetos cenográficos da Omne Criações, do desenho à montagem no local." moments={['word-highlight']}>
+  <Hero
+    title="Serviços de cenografia e esculturas"
+    lead="5 serviços que saem da mesma oficina em São Paulo: uma peça só, como uma escultura, ou o espaço inteiro montado no local."
+    image={{ src: '/uploads/projetos/vila-da-crianca/01.webp', alt: 'Entrada da Vila das Crianças, com casinhas de telhado vermelho e balcão de atendimento, num shopping' }}
+    subject="espaço temático Vila da Criança"
+    position="55% 50%"
+    secondary={{ href: '/portfolio', label: 'Ver o portfólio' }}
+  />
+
+  <Statement id="oficina" label="Os serviços">Cada serviço passa pelas mesmas mãos: o desenho, a modelagem, a pintura e a <strong>montagem no local</strong>.</Statement>
+
+  <section class="section g2" id="lista" aria-labelledby="lista-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head"><h2 id="lista-h">Cinco serviços da oficina</h2></div>
+        <div class="grid">
+          {rows[0].map((s) => (
+            <a class="tile span-4" href={`/servicos/${s.slug}`} style="--tile-ratio: 4 / 3"><div class="tile__media"><img src={s.cover.src} alt={s.cover.alt} loading="lazy" data-source="client" data-subject={s.title} /></div><p class="t-card">{s.title}</p><p class="t-small muted">{s.summary}</p></a>
+          ))}
+        </div>
+      </div>
+      <div class="grid">
+        {rows[1].map((s) => (
+          <a class="tile span-6" href={`/servicos/${s.slug}`} style="--tile-ratio: 16 / 9"><div class="tile__media"><img src={s.cover.src} alt={s.cover.alt} loading="lazy" data-source="client" data-subject={s.title} /></div><p class="t-card">{s.title}</p><p class="t-small muted">{s.summary}</p></a>
+        ))}
+      </div>
+    </div>
+  </section>
 </BaseLayout>
-
-<style>
-  .intro {
-    padding-top: var(--space-9);
-  }
-
-  .intro :global(.heading) {
-    margin-bottom: 0;
-  }
-</style>

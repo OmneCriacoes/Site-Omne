@@ -71,6 +71,8 @@ export interface SiteSettings {
   readonly aboutTitle: string;
   readonly aboutText: string;
   readonly stats: readonly { readonly value: string; readonly label: string }[];
+  /** Etapas de um projeto, do pedido à montagem. */
+  readonly process: readonly { readonly title: string; readonly text: string }[];
   readonly contact: ContactInfo;
 }
 

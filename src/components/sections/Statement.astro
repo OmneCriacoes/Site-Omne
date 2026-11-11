@@ -1,0 +1,19 @@
+---
+/**
+ * Uma frase em destaque numa seção só sua: o momento word-highlight, que passa a frase para a tinta palavra por
+ * palavra ao rolar. A palavra entre <strong> ganha a cor da marca. Sem script, a frase aparece inteira.
+ */
+interface Props {
+  id: string;
+  label: string;
+}
+
+const { id, label } = Astro.props;
+---
+
+<section class="section statement" id={id} data-moment="word-highlight" aria-label={label}>
+  <div class="wrap">
+    <p class="t-label">{label}</p>
+    <p class="mo-wh__text"><slot /></p>
+  </div>
+</section>

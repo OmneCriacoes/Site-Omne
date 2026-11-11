@@ -64,6 +64,8 @@ const settings = defineCollection({
     aboutTitle: z.string(),
     aboutText: z.string(),
     stats: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
+    /** Etapas de um projeto, do pedido à montagem. */
+    process: z.array(z.object({ title: z.string(), text: z.string() })).default([]),
     contact: z.object({
       whatsapp: z.string(),
       phoneDisplay: z.string(),

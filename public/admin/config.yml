@@ -149,6 +149,12 @@ collections:
             fields:
               - { name: value, label: Valor, widget: string }
               - { name: label, label: Legenda, widget: string }
+          - name: process
+            label: Etapas de um projeto
+            widget: list
+            fields:
+              - { name: title, label: Etapa, widget: string }
+              - { name: text, label: Texto, widget: text }
           - name: contact
             label: Contato
             widget: object

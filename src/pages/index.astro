@@ -1,28 +1,71 @@
 ---
 import { container } from '@core/container';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import About from '@components/sections/About.astro';
-import ClientsStrip from '@components/sections/ClientsStrip.astro';
-import CtaBand from '@components/sections/CtaBand.astro';
-import FeaturedProjects from '@components/sections/FeaturedProjects.astro';
 import Hero from '@components/sections/Hero.astro';
-import ServicesGrid from '@components/sections/ServicesGrid.astro';
+import ProjectCard from '@components/ui/ProjectCard.astro';
+import QuoteSection from '@components/sections/QuoteSection.astro';
+import ProcessSteps from '@components/sections/ProcessSteps.astro';
+import Statement from '@components/sections/Statement.astro';
 
-const { site, catalog, portfolio, repository } = container;
-const [settings, services, featured, clients, contact] = await Promise.all([
-  site.getSettings(),
-  catalog.list(),
-  portfolio.featured(3),
-  repository.listClients(),
-  container.contact(),
-]);
+const { site, catalog, portfolio } = container;
+const [settings, services, featured] = await Promise.all([site.getSettings(), catalog.list(), portfolio.featured(6)]);
+const contact = settings.contact;
+
 ---
 
-<BaseLayout>
-  <Hero settings={settings} />
-  <ServicesGrid services={services} />
-  <FeaturedProjects projects={featured} services={services} />
-  <About settings={settings} />
-  <ClientsStrip clients={clients} />
-  <CtaBand whatsappLink={contact.whatsappLink()} />
+<BaseLayout moments={['pinned-chapters', 'word-highlight']}>
+  <Hero
+    title={settings.heroTitle}
+    lead={settings.heroSubtitle}
+    image={settings.heroImage}
+    subject="decoração de Natal em shopping"
+    position="72% 40%"
+    secondary={{ href: '/portfolio', label: 'Ver o portfólio' }}
+  />
+
+  <section class="section" id="servicos" aria-labelledby="servicos-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="servicos-h">Esculturas, murais, mesas e espaços</h2>
+        <p>Cinco serviços que saem da mesma oficina. Passe pelo nome para ver uma peça de cada um.</p>
+      </div>
+      <div class="grid grid--top fill" data-peek>
+        <ul class="rows span-5">
+          {services.map((s) => (
+            <li data-peek-to={s.slug} tabindex="0"><a class="rows__name" href={`/servicos/${s.slug}`}>{s.title}</a><p>{s.summary}</p></li>
+          ))}
+        </ul>
+        <div class="frame frame--photo frame--fill span-6 start-7">
+          {services.map((s, i) => (
+            <img class="frame__img" data-peek-for={s.slug} src={s.cover.src} alt={s.cover.alt} hidden={i > 0} data-source="client" data-subject={s.title} />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <ProcessSteps steps={settings.process} />
+
+  <section class="section g2" id="portfolio" aria-labelledby="portfolio-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head section-head--row">
+          <div><h2 id="portfolio-h">Portfólio de cenografia</h2><p>Seis dos trabalhos que a oficina entregou para shoppings, marcas e instituições.</p></div>
+          <a class="link" href="/portfolio">Ver todos os projetos</a>
+        </div>
+        <div class="grid">{featured.slice(0, 3).map((p) => <ProjectCard project={p} span="span-4" ratio="4 / 3" />)}</div>
+      </div>
+      <div class="grid">{featured.slice(3, 6).map((p) => <ProjectCard project={p} span="span-4" ratio="4 / 3" />)}</div>
+    </div>
+  </section>
+
+  <Statement id="oficina" label="A oficina">Uma só equipe desenha, modela, pinta, transporta e monta cada peça, então o cliente fala com as mesmas pessoas do <strong>primeiro esboço</strong> à inauguração.</Statement>
+
+  <QuoteSection
+    title="Orçamento de cenografia pelo WhatsApp"
+    image={{ src: '/uploads/projetos/expresso-da-8/11.webp', alt: 'Fachada cenográfica da loja Baú do Bruxo, com coruja e lustres de papel, no Expresso da 8' }}
+    subject="espaço temático Expresso da 8"
+    services={services}
+    contact={contact}
+  />
 </BaseLayout>

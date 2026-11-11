@@ -1,0 +1,41 @@
+---
+import type { ContactInfo, Image, Service } from '@domain/entities';
+import QuoteForm from '@components/sections/QuoteForm.astro';
+
+/** O pedido de orçamento: o texto e uma foto à esquerda, o formulário num card à direita. */
+interface Props {
+  title: string;
+  image: Image;
+  subject: string;
+  services: readonly Service[];
+  contact: ContactInfo;
+  selectedService?: string;
+}
+
+const { title, image, subject, services, contact, selectedService } = Astro.props;
+---
+
+<section class="section" id="orcamento" style="--hm: 2" aria-labelledby="orcamento-h">
+  <div class="wrap">
+    <div class="grid grid--top fill">
+      <div class="span-5">
+        <div class="section-head">
+          <h2 id="orcamento-h">{title}</h2>
+          <p>Preencha os campos e o WhatsApp abre com a mensagem pronta para a oficina. Atendemos todo o Brasil a partir de {contact.city}.</p>
+        </div>
+        <div class="frame frame--photo quote__photo" style="--ratio: 75%">
+          <img class="frame__img" src={image.src} alt={image.alt} loading="lazy" data-source="client" data-subject={subject} />
+        </div>
+      </div>
+      <div class="card span-6 start-7 quote__card">
+        <QuoteForm services={services} contact={contact} selectedService={selectedService} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quote__photo { margin-top: var(--s-7); }
+  .quote__card { align-self: start; }
+  @media (max-width: 639px) { .quote__photo { --ratio: 100% !important; } }
+</style>

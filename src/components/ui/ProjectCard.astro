@@ -1,83 +1,19 @@
 ---
-import { SEGMENT_LABELS, type Project } from '@domain/entities';
-import Media from './Media.astro';
+import type { Project } from '@domain/entities';
 
+/** Um projeto como tile aberto do kit: a foto em cima, o nome e o cliente embaixo, tudo um link. */
 interface Props {
   project: Project;
-  serviceTitles: ReadonlyMap<string, string>;
+  span: 'span-3' | 'span-4' | 'span-6';
+  ratio?: string;
 }
 
-const { project, serviceTitles } = Astro.props;
-const tags = project.serviceSlugs.map((slug) => serviceTitles.get(slug) ?? slug);
+const { project, span, ratio = '4 / 3' } = Astro.props;
+const line = [project.clientName, project.location].filter(Boolean).join(', ');
 ---
 
-<article class="card" data-services={project.serviceSlugs.join(' ')} data-segment={project.segment}>
-  <a class="link" href={`/portfolio/${project.slug}`}>
-    <Media image={project.cover} ratio="3 / 2" />
-    <div class="body">
-      <p class="meta" data-sk="text">{[SEGMENT_LABELS[project.segment], project.year].filter(Boolean).join(' · ')}</p>
-      <h3 class="title" data-sk="text">{project.title}</h3>
-      <p class="summary" data-sk="text">{project.summary}</p>
-      <ul class="tags" aria-label="Serviços">
-        {tags.map((tag) => <li data-sk="block">{tag}</li>)}
-      </ul>
-    </div>
-  </a>
-</article>
-
-<style>
-  .card[hidden] {
-    display: none;
-  }
-
-  .link {
-    display: grid;
-    gap: var(--space-4);
-    text-decoration: none;
-  }
-
-  .link :global(.media img) {
-    transition: transform 700ms var(--ease-out);
-  }
-
-  .link:hover :global(.media img) {
-    transform: scale(1.04);
-  }
-
-  .body {
-    display: grid;
-    gap: var(--space-2);
-  }
-
-  .meta {
-    color: var(--color-ink-soft);
-    font-size: var(--text-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .title {
-    font-size: var(--text-xl);
-  }
-
-  .summary {
-    color: var(--color-ink-soft);
-    font-size: var(--text-sm);
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin: var(--space-2) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .tags li {
-    padding: var(--space-1) var(--space-3);
-    border: 1px solid var(--color-line);
-    border-radius: 999px;
-    font-size: var(--text-xs);
-  }
-</style>
+<a class={`tile ${span}`} href={`/portfolio/${project.slug}`} style={`--tile-ratio: ${ratio}`}>
+  <div class="tile__media"><img src={project.cover.src} alt={project.cover.alt} loading="lazy" data-source="client" data-subject={project.title} /></div>
+  <p class="t-card">{project.title}</p>
+  {line && <p class="t-small muted">{line}</p>}
+</a>

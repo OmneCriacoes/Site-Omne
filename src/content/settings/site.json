@@ -1,19 +1,36 @@
 {
   "name": "Omne Criações",
-  "tagline": "Cenografia e arte em grande escala",
-  "description": "Cenografia, esculturas, murais, mesas e espaços temáticos para prefeituras, condomínios, empresas e eventos.",
+  "tagline": "Cenografia e esculturas sob medida",
+  "description": "Esculturas, murais, mesas e espaços temáticos projetados, fabricados em São Paulo e montados no local pela mesma equipe.",
   "theme": "galeria",
-  "showThemePreview": true,
-  "heroTitle": "Transformamos espaços em experiências",
-  "heroSubtitle": "Cenografia, esculturas, murais e espaços temáticos projetados e produzidos sob medida, do primeiro esboço à montagem no local.",
-  "heroImage": { "src": "/uploads/projetos/natal-em-shoppings/01.webp", "alt": "Estação do Noel com ursos e casa cenográfica no Maringá Shopping" },
-  "aboutTitle": "Arte que cabe no projeto e no prazo",
+  "showThemePreview": false,
+  "heroTitle": "Cenografia para shoppings, marcas e eventos",
+  "heroSubtitle": "Esculturas em fibra de vidro, murais pintados à mão e espaços temáticos inteiros saem da oficina em São Paulo e são montados no local.",
+  "heroImage": {
+    "src": "/uploads/projetos/natal-em-shoppings/03.webp",
+    "alt": "Papai Noel gigante lendo o livro Fábulas de Natal, com quebra-nozes e Mamãe Noel, num shopping"
+  },
+  "aboutTitle": "Oficina de cenografia em São Paulo",
   "aboutText": "A Omne Criações une ateliê de arte e produção cenográfica para entregar projetos completos: criação, modelagem, pintura, transporte e montagem. Já criamos esculturas para a Cow Parade e para o SESC, decorações de Natal para shoppings, exposições como o Espaço Arvorar da Duratex e expositores para marcas como Coca-Cola e Johnson & Johnson.",
   "stats": [],
   "contact": {
     "whatsapp": "+55 (14) 99184-7209",
     "phoneDisplay": "(14) 99184-7209",
     "email": "celsosilva9583@gmail.com",
-    "city": "São Paulo, Brasil"
-  }
+    "city": "São Paulo"
+  },
+  "process": [
+    {
+      "title": "Projeto",
+      "text": "O desenho e o projeto em 3D mostram a peça antes de ela existir, com materiais, medidas e prazo no orçamento."
+    },
+    {
+      "title": "Produção",
+      "text": "Modelagem, escultura, pintura e acabamento acontecem na oficina, em isopor, resina ou fibra de vidro."
+    },
+    {
+      "title": "Montagem",
+      "text": "A mesma equipe transporta a peça e a monta no local, pronta para a inauguração."
+    }
+  ]
 }

@@ -1,19 +1,49 @@
 ---
 import { container } from '@core/container';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import About from '@components/sections/About.astro';
-import ClientsStrip from '@components/sections/ClientsStrip.astro';
-import CtaBand from '@components/sections/CtaBand.astro';
+import Hero from '@components/sections/Hero.astro';
+import ProcessSteps from '@components/sections/ProcessSteps.astro';
 
-const [settings, clients, contact] = await Promise.all([
+const [settings, projects, clients] = await Promise.all([
   container.site.getSettings(),
+  container.portfolio.list(),
   container.repository.listClients(),
-  container.contact(),
 ]);
+// clientes com projeto no site viram linhas com o que foi feito; os outros, uma linha de nomes
+const withProject = projects.filter((p) => p.clientName).slice(0, 6);
+const named = withProject.map((p) => p.clientName.toLowerCase());
+const others = clients.map((c) => c.name).filter((name) => !named.some((n) => n.includes(name.toLowerCase())));
+const list = (names: string[]) => (names.length > 1 ? `${names.slice(0, -1).join(', ')} e ${names.at(-1)}` : names.join(''));
 ---
 
-<BaseLayout title="Sobre" description={settings.aboutText}>
-  <About settings={settings} showLink={false} headingLevel="h1" />
-  <ClientsStrip clients={clients} />
-  <CtaBand whatsappLink={contact.whatsappLink()} />
+<BaseLayout title={settings.aboutTitle} description={settings.aboutText} moments={['pinned-chapters']}>
+  <Hero
+    title={settings.aboutTitle}
+    lead={`A mesma equipe desenha, modela, pinta, transporta e monta cada peça. Atendemos todo o Brasil a partir de ${settings.contact.city}, com ${projects.length} projetos no portfólio.`}
+    image={{ src: '/uploads/projetos/vassoura-quebrada/02.webp', alt: 'Escultura de um homem de barba, óculos e quepe lendo um livrinho, de pé sobre um baú, na oficina' }}
+    subject="escultura Vassoura Quebrada"
+    position="50% 30%"
+    secondary={{ href: '/portfolio', label: 'Ver o portfólio' }}
+  />
+
+  <ProcessSteps steps={settings.process} />
+
+  <section class="section" id="clientes" style="--hm: 2" aria-labelledby="clientes-h">
+    <div class="wrap">
+      <div class="grid grid--top fill">
+        <div class="span-5">
+          <div class="section-head">
+            <h2 id="clientes-h">Clientes e o que fizemos para eles</h2>
+            <p>Também atendemos {list(others)}.</p>
+          </div>
+          <ul class="rows">
+            {withProject.map((p) => <li><span class="rows__name">{p.clientName}</span><a class="rows__value link" href={`/portfolio/${p.slug}`}>{p.title}</a></li>)}
+          </ul>
+        </div>
+        <div class="frame frame--photo span-6 start-7" style="--ratio: 75%">
+          <img class="frame__img" src="/uploads/projetos/sesc/04.webp" alt="Escultura de uma banhista deitada numa toalha, com óculos de sol e um copo na mão, feita para o SESC" loading="lazy" data-source="client" data-subject="personagens SESC" />
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

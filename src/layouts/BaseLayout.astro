@@ -1,43 +1,37 @@
 ---
-import '@styles/global.css';
+import '@styles/pages.css';
 import { container } from '@core/container';
-import { THEME_LABELS } from '@domain/entities';
-import { THEME_STORAGE_KEY } from '@scripts/theme-preview';
 import Footer from '@components/layout/Footer.astro';
 import Header from '@components/layout/Header.astro';
-import ThemeSwitcher from '@components/layout/ThemeSwitcher.astro';
-import WhatsAppButton from '@components/layout/WhatsAppButton.astro';
 
 interface Props {
   title?: string;
   description?: string;
   image?: string;
-  whatsappMessage?: string;
+  /** Momentos sorteados para a página (moments.mjs pick): carregados antes da primeira pintura. */
+  moments?: readonly string[];
 }
 
 const settings = await container.site.getSettings();
-const contact = await container.contact();
-const { title, description = settings.description, image = settings.heroImage.src, whatsappMessage } = Astro.props;
+const { title, description = settings.description, image = settings.heroImage.src, moments = [] } = Astro.props;
 
-const pageTitle = title ? `${title} | ${settings.name}` : `${settings.name} | ${settings.tagline}`;
+const pageTitle = title ? `${title} | ${settings.name}` : `${settings.name}: ${settings.heroTitle.toLowerCase()}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const whatsappLink = contact.whatsappLink(whatsappMessage);
-const previewThemes = settings.showThemePreview ? Object.keys(THEME_LABELS) : [];
 ---
 
 <!doctype html>
-<html lang="pt-BR" data-theme={settings.theme}>
+<!-- tipo: service · sorteio: hero split, nav-centre, close-type, footer-columns (footer-visit ressorteado: sem endereço
+     de visita), ritmo space, botões tonal, logo do cliente no lugar da marca · tipografia newsreader (Newsreader /
+     Hanken Grotesk) · cores do logo da Omne (start.mjs brand) · momentos pinned-chapters e word-highlight -->
+<html lang="pt-BR" data-type="service" data-radius="soft" data-buttons="tonal" data-motion>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Liga o esqueleto só quando há JavaScript; sem ele a página aparece direto. -->
-    <script is:inline>document.documentElement.classList.add('js', 'is-loading');</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content={settings.name} />
@@ -45,32 +39,52 @@ const previewThemes = settings.showThemePreview ? Object.keys(THEME_LABELS) : []
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(image, Astro.site)} />
-
-    {
-      previewThemes.length > 0 && (
-        <script is:inline define:vars={{ key: THEME_STORAGE_KEY, themes: previewThemes }}>
-          try {
-            const wanted = new URLSearchParams(location.search).get('tema') ?? localStorage.getItem(key);
-            if (wanted && themes.includes(wanted)) document.documentElement.dataset.theme = wanted;
-          } catch {}
-        </script>
-      )
-    }
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#faf8f4" />
+    <meta name="site-kind" content="other" />
+    <meta name="page-type" content="service" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..700&family=Hanken+Grotesk:wght@400..600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/system.css" />
+    <link rel="stylesheet" href="/assets/ui/cards.css" />
+    <link rel="stylesheet" href="/assets/motion/motion.css" />
+    <link rel="stylesheet" href="/assets/layout/layout.css" />
+    <style is:inline>
+      :root {
+        --p-bg: #faf8f4; --p-surface: #f1ece3; --p-ink: #1d1b18; --p-muted: #686662;
+        --p-accent: #005273; --p-accent-ink: #faf8f4; --p-action: #005273; --p-action-ink: #faf8f4;
+        --p-inv-bg: #1d1b18; --p-inv-surface: #2a2824; --p-inv-ink: #faf8f4; --p-inv-muted: #9e9c98;
+        --p-inv-accent: #faf8f4; --p-inv-accent-ink: #1d1b18; --p-inv-action: #faf8f4; --p-inv-action-ink: #1d1b18;
+        --font-display: "Newsreader", Georgia, serif;
+        --font-text: "Hanken Grotesk", system-ui, sans-serif;
+        --display-weight: 400;
+        --display-tracking: -0.018em;
+        --display-tracking-xl: -0.025em;
+        --ly-scale: 1.06;
+      }
+    </style>
+    <script is:inline>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+    {moments.length > 0 && (
+      <>
+        <script is:inline>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+        <link rel="modulepreload" href="/assets/moments/moments.js" />
+        <link rel="modulepreload" href="/assets/moments/lib.js" />
+        {moments.map((id) => <link rel="modulepreload" href={`/assets/moments/${id}/moment.js`} />)}
+      </>
+    )}
   </head>
   <body>
-    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <Header siteName={settings.name} />
-    <main id="conteudo">
+    <main id="top">
       <slot />
     </main>
-    <Footer settings={settings} whatsappLink={contact.whatsappLink()} />
-    <WhatsAppButton href={whatsappLink} />
-    {settings.showThemePreview && <ThemeSwitcher />}
-
-    <script>
-      import { SkeletonController } from '@scripts/skeleton';
-
-      new SkeletonController({ root: document.documentElement, maxWaitMs: 2500, minVisibleMs: 450 }).start();
-    </script>
+    <Footer settings={settings} />
+    <nav class="actionbar" aria-label="Ações rápidas">
+      <a class="btn btn--primary" href="/contato">Pedir orçamento</a>
+    </nav>
+    <script is:inline type="module" src="/assets/system.js"></script>
+    <script is:inline type="module" src="/assets/motion/motion.js"></script>
+    <script is:inline type="module" src="/assets/layout/layout.js"></script>
   </body>
 </html>
