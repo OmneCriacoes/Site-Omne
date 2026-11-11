@@ -8,7 +8,9 @@ import ProcessSteps from '@components/sections/ProcessSteps.astro';
 import Statement from '@components/sections/Statement.astro';
 
 const { site, catalog, portfolio } = container;
-const [settings, services, featured] = await Promise.all([site.getSettings(), catalog.list(), portfolio.featured(6)]);
+const [settings, services, candidates] = await Promise.all([site.getSettings(), catalog.list(), portfolio.featured(7)]);
+// a foto do hero nunca volta num tile da mesma página
+const featured = candidates.filter((p) => p.cover.src !== settings.heroImage.src).slice(0, 6);
 const contact = settings.contact;
 
 ---

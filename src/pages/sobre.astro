@@ -10,7 +10,7 @@ const [settings, projects, clients] = await Promise.all([
   container.repository.listClients(),
 ]);
 // clientes com projeto no site viram linhas com o que foi feito; os outros, uma linha de nomes
-const withProject = projects.filter((p) => p.clientName).slice(0, 6);
+const withProject = projects.filter((p) => p.clientName).slice(0, 5);
 const named = withProject.map((p) => p.clientName.toLowerCase());
 const others = clients.map((c) => c.name).filter((name) => !named.some((n) => n.includes(name.toLowerCase())));
 const list = (names: string[]) => (names.length > 1 ? `${names.slice(0, -1).join(', ')} e ${names.at(-1)}` : names.join(''));
@@ -37,7 +37,7 @@ const list = (names: string[]) => (names.length > 1 ? `${names.slice(0, -1).join
             <p>Também atendemos {list(others)}.</p>
           </div>
           <ul class="rows">
-            {withProject.map((p) => <li><span class="rows__name">{p.clientName}</span><a class="rows__value link" href={`/portfolio/${p.slug}`}>{p.title}</a></li>)}
+            {withProject.map((p) => <li><span class="rows__name">{p.clientName}</span><p><a class="link" href={`/portfolio/${p.slug}`}>{p.title}</a></p></li>)}
           </ul>
         </div>
         <div class="frame frame--photo span-6 start-7" style="--ratio: 75%">

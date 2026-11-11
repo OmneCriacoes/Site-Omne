@@ -18,7 +18,7 @@ const { id, title, text, projects, link } = Astro.props;
 const list = projects.slice(0, 6);
 const rows = list.length <= 3 ? [list] : list.length === 4 ? [list.slice(0, 2), list.slice(2)] : [list.slice(0, 3), list.slice(3)];
 const spanOf = (row: readonly Project[]) => (row.length === 1 ? 'span-6' : row.length === 2 ? 'span-6' : 'span-4');
-const ratioOf = (row: readonly Project[]) => '4 / 3';
+const ratioOf = (_row: readonly Project[]) => (rows.length === 1 ? '3 / 2' : '4 / 3');
 ---
 
 <section class:list={['section', { g2: rows.length > 1 }]} id={id} aria-labelledby={`${id}-h`}>

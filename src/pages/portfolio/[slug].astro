@@ -49,7 +49,7 @@ const photoCount = project.gallery.length || 1;
   <Statement id="resumo" label={project.title}>O projeto {project.title} foi desenhado, feito e montado pela <strong>mesma equipe</strong>, do primeiro esboço à inauguração.</Statement>
 
   {factsPhoto && (
-    <section class="section" id="ficha" aria-labelledby="ficha-h">
+    <section class="section" id="ficha" style="--hm: 2" aria-labelledby="ficha-h">
       <div class="wrap">
         <div class="grid grid--top fill">
           <div class="span-5">
@@ -58,8 +58,8 @@ const photoCount = project.gallery.length || 1;
               {project.bodyHtml && <div class="ficha__text" set:html={project.bodyHtml} />}
             </div>
             <ul class="rows">
-              {facts.map((f) => <li><span class="rows__name">{f.label}</span><span class="rows__value">{f.value}</span></li>)}
-              <li><span class="rows__name">Serviços</span><span class="rows__value">{serviceList.map((s, i) => <>{i > 0 && ', '}<a class="link" href={`/servicos/${s.slug}`}>{s.title}</a></>)}</span></li>
+              {facts.map((f) => <li><span class="rows__name">{f.label}</span><p>{f.value}</p></li>)}
+              <li><span class="rows__name">Serviços</span><p>{serviceList.map((s, i) => <>{i > 0 && ', '}<a class="link" href={`/servicos/${s.slug}`}>{s.title}</a></>)}</p></li>
             </ul>
           </div>
           <div class="frame frame--photo span-6 start-7" style="--ratio: 75%">

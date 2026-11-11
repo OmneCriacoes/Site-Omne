@@ -25,7 +25,7 @@ const sidePhoto = projects.flatMap((p) => p.gallery).find((img) => img.src !== s
 <BaseLayout title={service.title} description={service.summary} image={service.cover.src} moments={['word-highlight']}>
   <Hero
     title={service.title}
-    lead={service.summary}
+    lead={projects.length ? `${service.summary} ${projects.length} ${projects.length === 1 ? 'projeto' : 'projetos'} no portfólio.` : service.summary}
     image={service.cover}
     subject={service.title}
     secondary={{ href: '/servicos', label: 'Ver os serviços' }}
