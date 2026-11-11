@@ -1,20 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
+import HeroInterno from '../components/HeroInterno.astro';
+import fotoHero from '../content/projetos/expresso-da-8/02.jpg';
 ---
 
-<Base titulo="Página não encontrada">
-  <section class="container nao-encontrada">
-    <p class="rotulo">Erro 404</p>
-    <h1>Esta página saiu de cena</h1>
-    <p>O endereço pode ter mudado. Veja os projetos ou fale com a gente.</p>
-    <div class="acoes">
-      <a class="botao" href="/projetos/">Ver projetos</a>
-      <a class="botao botao--contorno" href="/">Ir para o início</a>
-    </div>
-  </section>
+<Base titulo="Página não encontrada" descricao="Este endereço não existe no site da Omne Criações.">
+  <HeroInterno
+    titulo="Página não encontrada"
+    texto="Este endereço não existe no site da Omne Criações. Os projetos, os serviços e o pedido de orçamento continuam a um clique."
+    foto={fotoHero}
+    alt="Placa Beco Mágico em madeira com moldura dourada, sob um brasão em relevo, no Expresso da 8"
+    assunto="placa cenográfica do Expresso da 8"
+    secundario={{ href: '/projetos/', rotulo: 'Ver os projetos' }}
+  />
 </Base>
-
-<style>
-  .nao-encontrada { display: grid; gap: 18px; justify-items: start; padding-block: clamp(64px, 12vw, 160px); }
-  .acoes { display: flex; flex-wrap: wrap; gap: 12px; }
-</style>

@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import FormularioOrcamento from '../components/FormularioOrcamento.astro';
+import SecaoOrcamento from '../components/SecaoOrcamento.astro';
 import { site } from '../lib/site';
 import fotoHero from '../content/projetos/expresso-da-8/11.jpg';
 import fotoServicos from '../content/projetos/nike/02.jpg';
@@ -96,35 +96,9 @@ const capitulos = [
     </div>
   </section>
 
-  <section class="section" id="orcamento" style="--hm: 2" aria-labelledby="orcamento-h">
-    <div class="wrap">
-      <div class="grid grid--top fill">
-        <div class="span-5">
-          <div class="section-head">
-            <h2 id="orcamento-h">Orçamento de cenografia pelo WhatsApp</h2>
-            <p>Preencha os campos e o WhatsApp abre com a mensagem pronta para a Omne. {site.atendimento}, a partir de {site.cidade}.</p>
-          </div>
-          <div class="frame frame--photo orcamento__foto" style="--ratio: 63%">
-            <Image class="frame__img" src={fotoNatal} widths={[700, 1393]} sizes="700px" alt="Papai Noel gigante lendo o livro Fábulas de Natal, com quebra-nozes e Mamãe Noel, num shopping" loading="lazy" data-source="client" data-subject="decoração de Natal em shopping" />
-          </div>
-        </div>
-        <div class="card span-6 start-7 orcamento__card">
-          <FormularioOrcamento />
-        </div>
-      </div>
-    </div>
-  </section>
+  <SecaoOrcamento titulo="Orçamento de cenografia pelo WhatsApp" foto={fotoNatal} alt="Papai Noel gigante lendo o livro Fábulas de Natal, com quebra-nozes e Mamãe Noel, num shopping" assunto="decoração de Natal em shopping" />
 </Base>
 
 <style>
   .servicos__link { margin-top: var(--s-6); }
-  .orcamento__foto { margin-top: var(--s-7); }
-  .orcamento__card { align-self: start; }
-  /* picture-develops: a foto da seção, na coluna direita, da altura do texto ao lado */
-  .develop { margin: 0; border-radius: var(--r-lg); overflow: hidden; height: min(560px, var(--ly-fit)); }
-  .develop :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
-  @media (max-width: 1023px) { .develop { height: auto; aspect-ratio: 4 / 3; margin-top: var(--s-7); } }
-  /* no telefone a seção tem duas telas: a foto mais alta enche a segunda, e o orçamento ganha uma foto maior */
-  @media (max-width: 639px) { .develop { aspect-ratio: 3 / 4; } .orcamento__foto { --ratio: 100% !important; } }
-  @media (max-width: 359px) { .develop { aspect-ratio: 4 / 3; } }
 </style>

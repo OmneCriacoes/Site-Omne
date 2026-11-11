@@ -1,0 +1,26 @@
+/* Regras de página que o kit deixa para a página (references/system.md: só o que fica dentro de um visual). */
+
+/* picture-develops: a foto da seção, na coluna direita, da altura do texto ao lado */
+.develop { margin: 0; border-radius: var(--r-lg); overflow: hidden; height: min(560px, var(--ly-fit)); }
+.develop > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 1023px) { .develop { height: auto; aspect-ratio: 4 / 3; margin-top: var(--s-7); } }
+/* no telefone a seção tem duas telas: a foto mais alta enche a segunda (abaixo de 360px volta a 4:3) */
+@media (max-width: 639px) { .develop { aspect-ratio: 3 / 4; } }
+@media (max-width: 359px) { .develop { aspect-ratio: 4 / 3; } }
+
+/* nome de linha que é link para o projeto */
+.rows a.rows__name { color: inherit; }
+
+/* a parede de fotos de um projeto (references/layout-v4.md: .wall, de linha a linha, gap de 2px) */
+.wall { display: grid; grid-template-columns: repeat(var(--wall-cols, 4), minmax(0, 1fr)); gap: 2px; }
+.wall__pic { margin: 0; aspect-ratio: 3 / 2; overflow: hidden; }
+.wall__pic > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* no telefone: até 3 fotos em coluna, 4 ou mais 2 a 2 e nunca meia linha */
+@media (max-width: 639px) {
+  .wall { grid-template-columns: 1fr; }
+  .wall:not([data-count="2"], [data-count="3"]) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wall[data-count="2"] .wall__pic, .wall[data-count="3"] .wall__pic { aspect-ratio: 16 / 9; }
+}
+
+/* um nome de linha que é link tem altura de toque */
+.rows a.rows__name { display: inline-block; padding-block: var(--s-2); }

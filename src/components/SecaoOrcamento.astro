@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import FormularioOrcamento from './FormularioOrcamento.astro';
+import { site } from '../lib/site';
+
+/** O pedido de orçamento: o texto e uma foto à esquerda, o formulário num card à direita. */
+interface Props {
+  titulo: string;
+  foto: ImageMetadata;
+  alt: string;
+  assunto: string;
+  /** a foto revela-se ao entrar na tela (o momento picture-develops da página) */
+  revela?: boolean;
+}
+
+const { titulo, foto, alt, assunto, revela = false } = Astro.props;
+---
+
+<section class="section" id="orcamento" style="--hm: 2" aria-labelledby="orcamento-h">
+  <div class="wrap">
+    <div class="grid grid--top fill">
+      <div class="span-5">
+        <div class="section-head">
+          <h2 id="orcamento-h">{titulo}</h2>
+          <p>Preencha os campos e o WhatsApp abre com a mensagem pronta para a Omne. {site.atendimento}, a partir de {site.cidade}.</p>
+        </div>
+        {revela
+          ? <figure class="develop orcamento__foto orcamento__foto--revela" data-moment="picture-develops"><Image src={foto} widths={[700, 1393]} sizes="700px" alt={alt} loading="lazy" data-source="client" data-subject={assunto} /></figure>
+          : <div class="frame frame--photo orcamento__foto" style="--ratio: 63%"><Image class="frame__img" src={foto} widths={[700, 1393]} sizes="700px" alt={alt} loading="lazy" data-source="client" data-subject={assunto} /></div>}
+      </div>
+      <div class="card span-6 start-7 orcamento__card">
+        <FormularioOrcamento />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .orcamento__foto { margin-top: var(--s-7); }
+  .orcamento__foto--revela { height: auto; aspect-ratio: 1393 / 878; }
+  .orcamento__card { align-self: start; }
+  @media (max-width: 639px) { .orcamento__foto { --ratio: 100% !important; } .orcamento__foto--revela { aspect-ratio: 1 / 1; } }
+</style>

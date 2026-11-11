@@ -1,69 +1,76 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import HeroInterno from '../../components/HeroInterno.astro';
 import CartaoProjeto from '../../components/CartaoProjeto.astro';
-import ChamadaOrcamento from '../../components/ChamadaOrcamento.astro';
-import { listaCategorias } from '../../lib/site';
 import { todosProjetos } from '../../lib/projetos';
+import fotoHero from '../../content/projetos/expresso-da-8/01.jpg';
+import fotoMurais from '../../content/projetos/espaco-arvorar-duratex/03.jpg';
 
 const projetos = await todosProjetos();
-const categoriasUsadas = listaCategorias.filter(([chave]) => projetos.some((p) => p.data.categorias.includes(chave)));
+// cada projeto aparece uma vez, no grupo da sua primeira categoria
+const doGrupo = (...categorias: string[]) => projetos.filter((p) => categorias.includes(p.data.categorias[0]));
+const espacos = doGrupo('espacos-tematicos');
+const esculturas = doGrupo('esculturas');
+const outros = doGrupo('murais', 'projetos', 'mesas');
 ---
 
-<Base titulo="Projetos" descricao="Esculturas, murais, espaços temáticos e cenografia feitos pela Omne Criações para shoppings, marcas e instituições.">
-  <section class="container topo">
-    <p class="rotulo">Portfólio</p>
-    <h1>Projetos</h1>
-    <p class="lead">Uma seleção de peças e espaços que criamos. Filtre por tipo de serviço.</p>
+<Base titulo="Projetos de cenografia e esculturas" descricao={`${projetos.length} projetos da Omne Criações para shoppings, marcas, instituições e eventos, com fotos de cada trabalho pronto.`} momentos={['picture-develops']} atual="Projetos">
+  <HeroInterno
+    titulo="Projetos de cenografia e esculturas"
+    texto={`${projetos.length} trabalhos para shoppings, marcas, instituições e eventos, da casa do Noel a uma exposição itinerante. Cada projeto abre com as fotos da peça pronta.`}
+    foto={fotoHero}
+    alt="Fachada cenográfica da loja Baú do Bruxo com um troll em tamanho real no Expresso da 8"
+    assunto="espaço temático Expresso da 8"
+    posicao="45% 50%"
+    secundario={{ href: '/servicos/', rotulo: 'Ver os serviços' }}
+  />
+
+  <section class="section g2" id="espacos-tematicos" aria-labelledby="espacos-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head">
+          <h2 id="espacos-h">Espaços temáticos em shoppings e lojas</h2>
+          <p>Natal, áreas de brincar, cidades cenográficas e lounges de marca, montados no local.</p>
+        </div>
+        <div class="grid">{espacos.slice(0, 3).map((p) => <CartaoProjeto projeto={p} largura="span-4" proporcao="4 / 3" />)}</div>
+      </div>
+      <div class="grid">{espacos.slice(3, 6).map((p) => <CartaoProjeto projeto={p} largura="span-4" proporcao="4 / 3" />)}</div>
+    </div>
   </section>
 
-  <section class="container" aria-label="Lista de projetos">
-    <div class="filtros" role="group" aria-label="Filtrar por categoria">
-      <button type="button" data-filtro="todos" aria-pressed="true">Todos</button>
-      {categoriasUsadas.map(([chave, rotulo]) => (
-        <button type="button" data-filtro={chave} aria-pressed="false">{rotulo}</button>
-      ))}
-    </div>
-    <div class="grade">
-      {projetos.map((p, i) => <CartaoProjeto projeto={p} prioridade={i < 3} />)}
+  <section class="section g2" id="esculturas" aria-labelledby="esculturas-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head">
+          <h2 id="esculturas-h">Esculturas, personagens e réplicas</h2>
+          <p>Peças em isopor, resina e fibra de vidro, modeladas e pintadas à mão na oficina.</p>
+        </div>
+        <div class="grid">{esculturas.slice(0, 3).map((p) => <CartaoProjeto projeto={p} largura="span-4" proporcao="4 / 3" />)}</div>
+      </div>
+      <div class="grid">{esculturas.slice(3, 5).map((p) => <CartaoProjeto projeto={p} largura="span-6" />)}</div>
     </div>
   </section>
 
-  <ChamadaOrcamento />
+  <section class="section" id="murais" style="--hm: 2" aria-labelledby="murais-h">
+    <div class="wrap">
+      <div class="grid grid--top fill">
+        <div class="span-5">
+          <div class="section-head">
+            <h2 id="murais-h">Murais, PDV e projetos de marca</h2>
+            <p>Exposições, expositores de ponto de venda e ativações, do desenho técnico à montagem.</p>
+          </div>
+          <ul class="rows">
+            {outros.map((p) => (
+              <li><a class="rows__name" href={`/projetos/${p.id}/`}>{p.data.titulo}</a><p>{p.data.resumo}</p></li>
+            ))}
+          </ul>
+        </div>
+        <figure class="develop span-6 start-7" data-moment="picture-develops">
+          <Image src={fotoMurais} widths={[1000, 2000]} sizes="1000px" alt="Linha do tempo ilustrada sobre a madeira nas paredes da exposição Espaço Arvorar" loading="lazy" data-source="client" data-subject="exposição Espaço Arvorar" />
+        </figure>
+      </div>
+    </div>
+  </section>
 </Base>
 
-<script>
-  import { criarFiltro } from '../../lib/filtro-projetos';
-
-  const url = new URL(window.location.href);
-  criarFiltro({
-    botoes: [...document.querySelectorAll<HTMLButtonElement>('[data-filtro]')],
-    itens: [...document.querySelectorAll<HTMLElement>('.grade [data-categorias]')],
-    lerInicial: () => url.searchParams.get('categoria'),
-    gravar: (categoria) => {
-      if (categoria === 'todos') url.searchParams.delete('categoria');
-      else url.searchParams.set('categoria', categoria);
-      history.replaceState(null, '', url);
-    },
-  });
-</script>
-
-<style>
-  .topo { display: grid; gap: 16px; padding-block: clamp(40px, 6vw, 80px) 32px; }
-  .lead { font-size: 1.15rem; max-width: 52ch; }
-  .filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
-  .filtros button {
-    font: 500 0.92rem var(--f-texto);
-    color: var(--c-texto);
-    background: transparent;
-    border: 1px solid #cfdde2;
-    border-radius: 999px;
-    padding: 9px 16px;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-  }
-  .filtros button:hover { border-color: var(--c-marca); color: var(--c-marca); }
-  .filtros button[aria-pressed='true'] { background: var(--c-tinta); border-color: var(--c-tinta); color: #fff; }
-  .grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; }
-  @media (max-width: 900px) { .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 480px) { .grade { gap: 28px 14px; } }
-</style>

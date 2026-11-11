@@ -1,77 +1,87 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import HeroInterno from '../components/HeroInterno.astro';
 import CartaoProjeto from '../components/CartaoProjeto.astro';
-import Processo from '../components/Processo.astro';
-import ChamadaOrcamento from '../components/ChamadaOrcamento.astro';
 import { projetosDaCategoria } from '../lib/projetos';
+import fotoHero from '../content/projetos/vila-da-crianca/01.jpg';
+import fotoMurais2 from '../content/projetos/shopping-nova-iguacu/03.jpg';
 
 const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
-const blocos = await Promise.all(
-  servicos.map(async (s) => ({
-    servico: s,
-    Content: (await render(s)).Content,
-    exemplos: (await projetosDaCategoria(s.data.categoria)).slice(0, 3),
-  })),
-);
+const servico = (categoria: string) => servicos.find((s) => s.data.categoria === categoria)!;
+const espacos = (await projetosDaCategoria('espacos-tematicos')).slice(0, 3);
+const deMarca = (await projetosDaCategoria('projetos')).filter((p) => p.data.categorias[0] === 'projetos' || p.data.categorias[0] === 'murais').slice(0, 3);
+// a ordem das seções alterna os layouts, para que duas vizinhas nunca se repitam
+const ordem = ['esculturas', 'murais', 'espacos-tematicos', 'mesas', 'projetos'] as const;
+const layout = { esculturas: 'split', murais: 'par', mesas: 'split', 'espacos-tematicos': 'tiles', projetos: 'tiles' } as const;
 ---
 
-<Base titulo="Serviços" descricao="Esculturas, murais, mesas, espaços temáticos e projetos cenográficos sob medida.">
-  <section class="container topo">
-    <p class="rotulo">Serviços</p>
-    <h1>O que a Omne faz</h1>
-    <p class="lead">Projetamos, fabricamos e montamos. Escolha o serviço para ver exemplos reais.</p>
-    <nav aria-label="Serviços nesta página">
-      <ul class="atalhos">
-        {servicos.map((s) => <li><a href={`#${s.data.categoria}`}>{s.data.titulo}</a></li>)}
-      </ul>
-    </nav>
-  </section>
+<Base titulo="Serviços de cenografia e esculturas" descricao="Esculturas, murais, mesas, espaços temáticos e projetos cenográficos, feitos pela mesma equipe da Omne Criações do desenho à montagem." momentos={['picture-develops']} atual="Serviços">
+  <HeroInterno
+    titulo="Serviços de cenografia e esculturas"
+    texto="5 serviços feitos pela mesma equipe em São Paulo. Você pode pedir uma peça só, como uma escultura, ou o espaço inteiro, montado no local."
+    foto={fotoHero}
+    alt="Entrada da Vila das Crianças, com casinhas de telhado vermelho e balcão de atendimento, num shopping"
+    assunto="espaço temático Vila da Criança"
+    posicao="55% 50%"
+    secundario={{ href: '/projetos/', rotulo: 'Ver os projetos' }}
+  />
 
-  {blocos.map(({ servico, Content, exemplos }) => (
-    <section class="container servico" id={servico.data.categoria} aria-labelledby={`t-${servico.data.categoria}`}>
-      <div class="info">
-        <h2 id={`t-${servico.data.categoria}`}>{servico.data.titulo}</h2>
-        <p class="chamada">{servico.data.chamada}</p>
-        <Content />
-        <ul class="itens">{servico.data.itens.map((item) => <li>{item}</li>)}</ul>
-        <a class="botao botao--contorno" href={`/orcamento/?servico=${servico.data.categoria}`}>Orçar {servico.data.titulo.toLowerCase()}</a>
+  {ordem.map((categoria) => {
+    const s = servico(categoria);
+    const tipo = layout[categoria];
+    const cabeca = (
+      <div class="section-head">
+        <h2 id={`${categoria}-h`}>{s.data.titulo}</h2>
+        <p>{s.data.chamada}</p>
       </div>
-      {exemplos.length > 0 && (
-        <div class="exemplos">
-          {exemplos.map((p) => <CartaoProjeto projeto={p} />)}
+    );
+    const itens = <ul class="rows">{s.data.itens.map((item) => <li><span class="rows__name">{item}</span></li>)}</ul>;
+    const destino = {
+      esculturas: { href: '/projetos/#esculturas', rotulo: 'Ver projetos de esculturas' },
+      mesas: { href: '/projetos/brinquedao-magazine-luiza/', rotulo: 'Ver o balcão do Brinquedão' },
+      projetos: { href: '/projetos/#murais', rotulo: 'Ver projetos de marca' },
+    }[categoria as 'esculturas' | 'mesas' | 'projetos'];
+    const link = destino && <p class="servico__link"><a class="link" href={destino.href}>{destino.rotulo}</a></p>;
+    if (tipo === 'split') return (
+      <section class="section" id={categoria} style="--hm: 2" aria-labelledby={`${categoria}-h`}>
+        <div class="wrap"><div class="grid grid--top fill">
+          <div class="span-5">{cabeca}{itens}{link}</div>
+          {s.data.foto && (categoria === 'esculturas'
+            ? <figure class="develop span-6 start-7" data-moment="picture-develops"><Image src={s.data.foto} widths={[1000, 1500]} sizes="1000px" alt={s.data.fotoAlt} loading="lazy" style="object-position: 50% 30%" data-source="client" data-subject={s.data.titulo} /></figure>
+            : <div class="frame frame--photo span-6 start-7" style="--ratio: 75%"><Image class="frame__img" src={s.data.foto} widths={[700, 1000]} sizes="700px" alt={s.data.fotoAlt} loading="lazy" data-source="client" data-subject={s.data.titulo} /></div>)}
+        </div></div>
+      </section>
+    );
+    if (tipo === 'par') return (
+      <section class="section" id={categoria} aria-labelledby={`${categoria}-h`}>
+        <div class="wrap">
+          <div class="section-head section-head--row">
+            <div><h2 id={`${categoria}-h`}>{s.data.titulo}</h2><p>{s.data.chamada} {s.data.itens.join(', ')}.</p></div>
+            <a class="link" href="/projetos/#murais">Ver projetos de murais</a>
+          </div>
+          <div class="grid">
+            {s.data.foto && <div class="frame frame--photo span-6" style="--ratio: 66.7%"><Image class="frame__img" src={s.data.foto} widths={[700, 1000]} sizes="700px" alt={s.data.fotoAlt} loading="lazy" data-source="client" data-subject={s.data.titulo} /></div>}
+            <div class="frame frame--photo span-6" style="--ratio: 66.7%"><Image class="frame__img" src={fotoMurais2} widths={[700, 1280]} sizes="700px" alt="Parede interativa de tubos coloridos com bocais de fale e escute no Shopping Nova Iguaçu" loading="lazy" data-source="client" data-subject="mural interativo no Shopping Nova Iguaçu" /></div>
+          </div>
         </div>
-      )}
-    </section>
-  ))}
-
-  <Processo />
-  <ChamadaOrcamento />
+      </section>
+    );
+    return (
+      <section class="section" id={categoria} aria-labelledby={`${categoria}-h`}>
+        <div class="wrap">
+          <div class="section-head section-head--row">
+            <div><h2 id={`${categoria}-h`}>{s.data.titulo}</h2><p>{s.data.chamada}</p></div>
+            <a class="link" href={categoria === 'projetos' ? '/projetos/#murais' : `/projetos/#${categoria}`}>{categoria === 'projetos' ? 'Ver projetos de marca' : 'Ver projetos de espaços temáticos'}</a>
+          </div>
+          <div class="grid">{(categoria === 'projetos' ? deMarca : espacos).map((p) => <CartaoProjeto projeto={p} largura="span-4" />)}</div>
+        </div>
+      </section>
+    );
+  })}
 </Base>
 
 <style>
-  .topo { display: grid; gap: 16px; padding-block: clamp(40px, 6vw, 80px) 24px; }
-  .lead { font-size: 1.15rem; max-width: 52ch; }
-  .atalhos { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
-  .atalhos a { font-weight: 600; text-decoration: none; }
-  .servico {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
-    gap: 32px 56px;
-    padding-block: 56px;
-    border-top: 1px solid var(--c-linha);
-    scroll-margin-top: 90px;
-  }
-  .info { display: grid; gap: 14px; align-content: start; }
-  .chamada { font-size: 1.1rem; color: var(--c-tinta); }
-  .itens { margin: 4px 0 8px; padding-left: 18px; display: grid; gap: 4px; }
-  .itens li::marker { color: var(--c-menta-texto); }
-  .info .botao { justify-self: start; }
-  .exemplos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-content: start; }
-  @media (max-width: 900px) {
-    .servico { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 520px) {
-    .exemplos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
+  .servico__link { margin-top: var(--s-6); }
 </style>

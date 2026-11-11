@@ -1,99 +1,103 @@
 ---
+import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Midia from '../../components/Midia.astro';
+import HeroInterno from '../../components/HeroInterno.astro';
 import CartaoProjeto from '../../components/CartaoProjeto.astro';
-import ChamadaOrcamento from '../../components/ChamadaOrcamento.astro';
 import { rotuloCategoria } from '../../lib/site';
 import { todosProjetos } from '../../lib/projetos';
 
 export async function getStaticPaths() {
   const projetos = await todosProjetos();
-  return projetos.map((projeto) => ({
-    params: { slug: projeto.id },
-    props: {
-      projeto,
-      relacionados: projetos
-        .filter((p) => p.id !== projeto.id && p.data.categorias.some((c) => projeto.data.categorias.includes(c)))
-        .slice(0, 3),
-    },
-  }));
+  return projetos.map((projeto) => {
+    const mesmos = projetos.filter((p) => p.id !== projeto.id && p.data.categorias.some((c) => projeto.data.categorias.includes(c)));
+    const outros = projetos.filter((p) => p.id !== projeto.id && !mesmos.includes(p));
+    return { params: { slug: projeto.id }, props: { projeto, relacionados: [...mesmos, ...outros].slice(0, 3) } };
+  });
 }
 
 const { projeto, relacionados } = Astro.props;
 const { titulo, resumo, cliente, local, ano, categorias, capa, galeria } = projeto.data;
 const { Content } = await render(projeto);
-const fotos = galeria.length ? galeria : [{ imagem: capa, legenda: '' }];
+
+// a capa abre o hero; a segunda foto revela-se ao lado da ficha; as outras enchem linhas inteiras numa tela
+const fotos = galeria.filter((g) => g.imagem.src !== capa.src);
+const [fotoFicha, ...resto] = fotos;
+const quantas = [8, 6, 4, 3, 2].find((n) => resto.length >= n) ?? 0;
+const porLinha = quantas === 6 ? 3 : Math.min(quantas, 4);
+const largura = `span-${12 / porLinha}`;
+const grade = resto.slice(0, quantas);
+
 const ficha = [
   ['Cliente', cliente],
   ['Local', local],
   ['Ano', ano ? String(ano) : ''],
-  ['Serviços', categorias.map(rotuloCategoria).join(', ')],
 ].filter(([, valor]) => valor);
+const linhaHero = [cliente, local].filter(Boolean).join(', ');
+const nomeServico = { esculturas: 'esculturas', murais: 'murais e cenografia', mesas: 'mesas cenográficas', 'espacos-tematicos': 'cenografia temática', projetos: 'projeto cenográfico' }[categorias[0]];
+const totalFotos = galeria.length || 1;
 ---
 
-<Base titulo={titulo} descricao={resumo} imagem={capa.src}>
-  <article>
-    <header class="container topo">
-      <a class="voltar" href="/projetos/">← Todos os projetos</a>
-      <h1>{titulo}</h1>
-      <div class="resumo">
-        <div class="texto"><p class="lead">{resumo}</p><Content /></div>
-        <dl>
-          {ficha.map(([rotulo, valor]) => (<div><dt>{rotulo}</dt><dd>{valor}</dd></div>))}
-        </dl>
-      </div>
-    </header>
+<Base titulo={titulo} descricao={resumo} imagem={capa.src} momentos={fotoFicha ? ['picture-develops'] : []} atual="Projetos">
+  <HeroInterno
+    titulo={`${titulo}, ${nomeServico}`}
+    texto={`${resumo}${linhaHero ? ` ${linhaHero}.` : ''} ${totalFotos} ${totalFotos === 1 ? 'foto' : 'fotos'} do trabalho pronto nesta página.`}
+    foto={capa}
+    alt={`${titulo}: a peça pronta`}
+    assunto={titulo}
+    secundario={{ href: '/projetos/', rotulo: 'Ver todos os projetos' }}
+  />
 
-    <div class="container galeria">
-      {fotos.map((foto, i) => (
-        <figure class:list={{ larga: i % 3 === 0 }}>
-          <Midia
-            src={foto.imagem}
-            alt={foto.legenda || `${titulo}, foto ${i + 1}`}
-            proporcao={i % 3 === 0 ? '16 / 10' : '4 / 5'}
-            tamanhos={i % 3 === 0 ? '100vw' : '(max-width: 760px) 100vw, 50vw'}
-            larguras={[640, 1024, 1600]}
-            prioridade={i === 0}
-          />
-          {foto.legenda && <figcaption>{foto.legenda}</figcaption>}
-        </figure>
-      ))}
-    </div>
-  </article>
-
-  <ChamadaOrcamento titulo="Quer algo parecido?" texto="Conte o que você precisa e usamos este projeto como ponto de partida." />
-
-  {relacionados.length > 0 && (
-    <section class="secao container" aria-labelledby="titulo-relacionados">
-      <div class="cabecalho-secao"><div><h2 id="titulo-relacionados">Projetos parecidos</h2></div></div>
-      <div class="relacionados">
-        {relacionados.map((p) => <CartaoProjeto projeto={p} />)}
+  {fotoFicha && (
+    <section class="section" id="ficha" aria-labelledby="ficha-h">
+      <div class="wrap">
+        <div class="grid grid--top fill">
+          <div class="span-5">
+            <div class="section-head">
+              <h2 id="ficha-h">Ficha do projeto</h2>
+              <div class="ficha__texto"><Content /></div>
+            </div>
+            <ul class="rows">
+              {ficha.map(([rotulo, valor]) => <li><span class="rows__name">{rotulo}</span><p>{valor}</p></li>)}
+              <li><span class="rows__name">Serviços</span><p>{categorias.map((c, i) => <>{i > 0 && ', '}<a class="link" href={`/servicos/#${c}`}>{rotuloCategoria(c)}</a></>)}</p></li>
+            </ul>
+          </div>
+          <figure class="develop span-6 start-7" data-moment="picture-develops">
+            <Image src={fotoFicha.imagem} widths={[1000, 1600]} sizes="1000px" alt={fotoFicha.legenda || `${titulo}, outra vista`} loading="lazy" data-source="client" data-subject={titulo} />
+          </figure>
+        </div>
       </div>
     </section>
   )}
+
+  {grade.length > 0 && (
+    <section class="section galeria-fotos" id="fotos" aria-labelledby="fotos-h">
+      <div class="wrap">
+        <div class="section-head"><h2 id="fotos-h">Fotos do {titulo}</h2></div>
+        <div class="wall" style={`--wall-cols: ${porLinha}`} data-count={grade.length}>
+          {grade.map((g, i) => (
+            <figure class="wall__pic">
+              <Image src={g.imagem} widths={[640, 1000]} sizes={porLinha <= 2 ? '1000px' : '640px'} alt={g.legenda || `${titulo}, foto ${i + 3}`} loading="lazy" data-source="client" data-subject={titulo} />
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="outros" aria-labelledby="outros-h">
+    <div class="wrap">
+      <div class="section-head section-head--row">
+        <div><h2 id="outros-h">Outros projetos da Omne</h2></div>
+        <a class="link" href="/projetos/">Ver todos os projetos</a>
+      </div>
+      <div class="grid">{relacionados.map((p) => <CartaoProjeto projeto={p} largura="span-4" />)}</div>
+    </div>
+  </section>
 </Base>
 
 <style>
-  .topo { display: grid; gap: 20px; padding-block: clamp(32px, 5vw, 64px) 40px; }
-  .voltar { font-weight: 600; text-decoration: none; font-size: var(--t-pequeno); }
-  .resumo { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 32px 64px; align-items: start; }
-  .texto { display: grid; gap: 14px; max-width: 62ch; }
-  .lead { font-size: 1.2rem; color: var(--c-tinta); }
-  dl { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--c-linha); }
-  dl div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--c-linha); }
-  dt { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-suave); font-weight: 600; padding-top: 3px; }
-  dd { margin: 0; color: var(--c-tinta); }
+  .ficha__texto :global(p) { max-width: 52ch; }
+  .ficha__texto:empty { display: none; }
 
-  .galeria { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  figure { margin: 0; display: grid; gap: 8px; }
-  figure.larga { grid-column: 1 / -1; }
-  figcaption { font-size: var(--t-pequeno); color: var(--c-suave); }
-  .relacionados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-
-  @media (max-width: 760px) {
-    .resumo { grid-template-columns: 1fr; }
-    .galeria { grid-template-columns: 1fr; }
-    .relacionados { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
 </style>
