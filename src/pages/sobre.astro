@@ -12,7 +12,7 @@ import fotoClientes from '../content/projetos/natal-em-shoppings/03.jpg';
 const etapas = await getCollection('etapas');
 const projetos = await todosProjetos();
 // os clientes com projeto no site viram linhas com o que foi feito; os outros, uma linha de nomes
-const comProjeto = projetos.filter((p) => p.data.cliente).slice(0, 6);
+const comProjeto = projetos.filter((p) => p.data.cliente).slice(0, 5);
 const nomesComProjeto = comProjeto.map((p) => p.data.cliente.toLowerCase());
 const outrosClientes = (await getCollection('clientes'))
   .map((c) => c.data.nome)
@@ -36,8 +36,8 @@ const lista = (nomes: string[]) => (nomes.length > 1 ? `${nomes.slice(0, -1).joi
       <div class="grid grid--top fill">
         <div class="span-5">
           <div class="section-head">
-            <h2 id="processo-h">Etapas de um projeto</h2>
-            <p>{site.sobre.texto}</p>
+            <h2 id="processo-h">Etapas de um projeto de cenografia</h2>
+            <p>Quatro etapas, com a mesma equipe em todas.</p>
           </div>
           <ul class="rows">
             {etapas.map((e) => <li><span class="rows__name">{e.data.titulo}</span><p>{e.data.texto}</p></li>)}
